@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && { git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1 && git pull --rebase --autostash 2>&1 || echo 'Auto-sync: no upstream branch tracked yet, skipping pull'; }",
+            "timeout": 60,
+            "statusMessage": "Auto-sync: pulling latest changes..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && if [ -n \"$(git status --porcelain)\" ]; then git add -A && git commit -m 'Auto-sync: automated commit via Claude Code Stop hook' >/dev/null && (git push -u origin HEAD 2>&1 || (git pull --rebase --autostash 2>&1 && git push -u origin HEAD 2>&1)); fi",
+            "timeout": 60,
+            "statusMessage": "Auto-sync: pushing changes to GitHub..."
+          }
+        ]
+      }
+    ]
+  }
+}
