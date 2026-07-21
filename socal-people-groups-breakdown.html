@@ -231,9 +231,47 @@
     line-height: 1.6;
     color: rgba(246,241,228,0.4);
   }
+
+  nav{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 18px 24px;
+    background: rgba(22,29,42,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-logo{
+    font-family:'Fraunces', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--gold-soft);
+    text-decoration:none;
+  }
+  .nav-links{ display:flex; gap: 22px; list-style:none; margin:0; padding:0; }
+  .nav-links a{
+    color: rgba(246,241,228,0.7);
+    text-decoration:none;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+  .nav-links a:hover{ color: var(--gold); }
 </style>
 </head>
 <body>
+
+<nav>
+  <a class="nav-logo" href="index.html">LA Metro Midlevel</a>
+  <ul class="nav-links">
+    <li><a href="gospel-workers-application.html">Apply</a></li>
+    <li><a href="socal-people-groups-breakdown.html">SoCal Breakdown</a></li>
+  </ul>
+</nav>
 
 <div class="wrap">
 
