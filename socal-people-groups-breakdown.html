@@ -143,6 +143,34 @@
     border-radius: 999px;
   }
 
+  .bar-row-hoverable{ cursor: default; }
+  .subgroup-breakdown{
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.25s ease, opacity 0.2s ease, margin-top 0.25s ease;
+    margin-top: 0;
+  }
+  .bar-row-hoverable:hover .subgroup-breakdown{
+    max-height: 220px;
+    opacity: 1;
+    margin-top: 12px;
+  }
+  .subgroup-line{
+    display:flex;
+    justify-content:space-between;
+    font-size: 12px;
+    color: rgba(246,241,228,0.65);
+    padding: 3px 10px;
+  }
+  .subgroup-line span:first-child{ padding-left: 6px; }
+  .subgroup-line.muted{ color: rgba(246,241,228,0.4); font-style: italic; }
+  .subgroup-note{
+    font-size: 11px;
+    color: rgba(246,241,228,0.35);
+    padding: 6px 10px 0;
+  }
+
   .fill-hispanic{ background: var(--clay); }
   .fill-white{ background: var(--blue); }
   .fill-asian{ background: var(--sage); }
@@ -310,9 +338,19 @@
         <div class="bar-label"><span class="name">White</span><span class="pct">24.7%</span></div>
         <div class="bar-track"><div class="bar-fill fill-white" style="width:24.7%"></div></div>
       </div>
-      <div class="bar-row">
+      <div class="bar-row bar-row-hoverable">
         <div class="bar-label"><span class="name">Asian</span><span class="pct">14.9%</span></div>
         <div class="bar-track"><div class="bar-fill fill-asian" style="width:14.9%"></div></div>
+        <div class="subgroup-breakdown">
+          <div class="subgroup-line"><span>Chinese</span><span>~21%</span></div>
+          <div class="subgroup-line"><span>Filipino</span><span>~19%</span></div>
+          <div class="subgroup-line"><span>Korean</span><span>~15%</span></div>
+          <div class="subgroup-line"><span>Vietnamese</span><span>~10%</span></div>
+          <div class="subgroup-line"><span>Asian Indian</span><span>~7%</span></div>
+          <div class="subgroup-line"><span>Japanese</span><span>~7%</span></div>
+          <div class="subgroup-line muted"><span>Other / multiple Asian groups</span><span>~21%</span></div>
+          <div class="subgroup-note">Shares of LA County's Asian population — approximate, directional only.</div>
+        </div>
       </div>
       <div class="bar-row">
         <div class="bar-label"><span class="name">Black</span><span class="pct">7.8%</span></div>
@@ -343,9 +381,19 @@
         <div class="bar-label"><span class="name">Hispanic / Latino</span><span class="pct">34.2%</span></div>
         <div class="bar-track"><div class="bar-fill fill-hispanic" style="width:34.2%"></div></div>
       </div>
-      <div class="bar-row">
+      <div class="bar-row bar-row-hoverable">
         <div class="bar-label"><span class="name">Asian</span><span class="pct">22.2%</span></div>
         <div class="bar-track"><div class="bar-fill fill-asian" style="width:22.2%"></div></div>
+        <div class="subgroup-breakdown">
+          <div class="subgroup-line"><span>Vietnamese</span><span>~29%</span></div>
+          <div class="subgroup-line"><span>Chinese</span><span>~15%</span></div>
+          <div class="subgroup-line"><span>Korean</span><span>~13%</span></div>
+          <div class="subgroup-line"><span>Filipino</span><span>~11%</span></div>
+          <div class="subgroup-line"><span>Asian Indian</span><span>~9%</span></div>
+          <div class="subgroup-line"><span>Japanese</span><span>~6%</span></div>
+          <div class="subgroup-line muted"><span>Other / multiple Asian groups</span><span>~17%</span></div>
+          <div class="subgroup-note">Shares of Orange County's Asian population — approximate, directional only.</div>
+        </div>
       </div>
       <div class="bar-row">
         <div class="bar-label"><span class="name">Two or more races</span><span class="pct">4.3%</span></div>
