@@ -1,0 +1,36 @@
+name: Auto-merge Claude branches
+
+on:
+  push:
+    branches:
+      - 'claude/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open (or reuse) a PR into main and merge it
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+
+          PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')
+
+          if [ -z "$PR" ]; then
+            gh pr create --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --base main \
+              --title "Auto-sync: $BRANCH" \
+              --body "Automated sync from a Claude Code session branch, merged automatically so GitHub Pages picks it up." || true
+            PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')
+          fi
+
+          if [ -n "$PR" ]; then
+            gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch \
+              || gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --delete-branch
+          else
+            echo "No PR found or created for $BRANCH; nothing to merge."
+          fi
