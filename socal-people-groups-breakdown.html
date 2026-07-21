@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>People Group Breakdown — LA &amp; Orange County</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#F6F1E4;
+    --night:#1F2A3C;
+    --night-deep:#161D2A;
+    --gold:#D9A441;
+    --gold-soft:#E8C374;
+    --sage:#7F9678;
+    --clay:#B8654A;
+    --blue:#5A85B0;
+    --line: rgba(246,241,228,0.16);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background: var(--night-deep);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  .eyebrow{
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+    margin-bottom: 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:'';
+    width: 20px;
+    height: 1px;
+    background: var(--gold-soft);
+    display:inline-block;
+  }
+
+  h1{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(1.9rem, 4.5vw, 2.7rem);
+    line-height: 1.1;
+    margin: 0 0 16px;
+  }
+
+  .lede{
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: rgba(246,241,228,0.72);
+    max-width: 60ch;
+    margin: 0 0 40px;
+  }
+
+  .section-title{
+    font-family:'Fraunces', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: var(--gold-soft);
+    margin-bottom: 20px;
+  }
+
+  .counties{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 44px;
+  }
+  @media (max-width: 700px){ .counties{ grid-template-columns: 1fr; } }
+
+  .county-card{
+    background: rgba(246,241,228,0.03);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px 26px;
+  }
+
+  .county-header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom: 4px;
+  }
+  .county-name{
+    font-family:'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--gold-soft);
+  }
+  .county-pop{
+    font-size: 12px;
+    color: rgba(246,241,228,0.5);
+  }
+  .county-sub{
+    font-size: 12.5px;
+    color: rgba(246,241,228,0.45);
+    margin-bottom: 22px;
+  }
+
+  .bar-row{
+    margin-bottom: 16px;
+  }
+  .bar-label{
+    display:flex;
+    justify-content:space-between;
+    font-size: 13.5px;
+    margin-bottom: 6px;
+  }
+  .bar-label .name{ font-weight: 500; }
+  .bar-label .pct{ color: var(--gold-soft); font-weight: 600; }
+  .bar-track{
+    height: 8px;
+    background: rgba(246,241,228,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bar-fill{
+    height: 100%;
+    border-radius: 999px;
+  }
+
+  .fill-hispanic{ background: var(--clay); }
+  .fill-white{ background: var(--blue); }
+  .fill-asian{ background: var(--sage); }
+  .fill-black{ background: var(--gold); }
+  .fill-multi{ background: #8B7EC8; }
+  .fill-other{ background: rgba(246,241,228,0.35); }
+
+  .areas-section{ margin: 0 0 40px; }
+  .areas-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 640px){ .areas-grid{ grid-template-columns: 1fr; } }
+  .area-card{
+    background: rgba(246,241,228,0.03);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .area-name{
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .area-county{
+    font-weight: 400;
+    color: rgba(246,241,228,0.4);
+    font-size: 12px;
+  }
+  .area-bar{
+    height: 6px;
+    background: rgba(246,241,228,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .area-line{
+    display:flex;
+    justify-content:space-between;
+    font-size: 12.5px;
+    margin-bottom: 2px;
+  }
+  .area-line.muted{ color: rgba(246,241,228,0.45); }
+
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 14px;
+    margin-top: 8px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .legend-item{
+    display:flex;
+    align-items:center;
+    gap: 7px;
+    font-size: 12.5px;
+    color: rgba(246,241,228,0.65);
+    cursor: default;
+    padding: 3px 8px;
+    border-radius: 999px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .legend-item:hover{
+    background: rgba(246,241,228,0.06);
+    color: var(--ink);
+  }
+  .map-tooltip{
+    position: fixed;
+    pointer-events: none;
+    background: var(--night);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    color: var(--ink);
+    z-index: 999;
+    display: none;
+    max-width: 220px;
+    line-height: 1.5;
+  }
+  .map-tooltip .tt-title{ font-weight: 600; color: var(--gold-soft); margin-bottom: 2px; }
+  .legend-dot{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink:0;
+  }
+
+  .note{
+    margin-top: 28px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: rgba(246,241,228,0.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="eyebrow">Ministry planning reference · Southern California</div>
+  <h1>People group breakdown: LA &amp; Orange County</h1>
+  <p class="lede">A snapshot of the ethnic and racial makeup of Los Angeles County and Orange County, zoomed to just these two counties, with zip codes clustered and colored by the majority group nearest to that area.</p>
+
+  <div class="map-section">
+    <div id="realMap" style="width:100%; max-width:520px; margin:0 auto;"></div>
+    <p style="text-align:center; font-size:12px; color:rgba(246,241,228,0.4); margin:12px 0 40px;">County shapes from US Census Bureau TIGER boundary data. Regions are drawn around 17 known reference points and clipped to the actual county outlines — not literal zip code lines, but a close visual stand-in given real per-zip data isn't reliably available.</p>
+  </div>
+
+  <div class="section-title">County summary</div>
+  <div class="counties">
+
+    <div class="county-card">
+      <div class="county-header">
+        <span class="county-name">LA County</span>
+        <span class="county-pop">~9.7M people</span>
+      </div>
+      <div class="county-sub">Most populous county in the US</div>
+
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">Hispanic / Latino</span><span class="pct">48.4%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-hispanic" style="width:48.4%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">White</span><span class="pct">24.7%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-white" style="width:24.7%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">Asian</span><span class="pct">14.9%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-asian" style="width:14.9%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">Black</span><span class="pct">7.8%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-black" style="width:7.8%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">Two or more races</span><span class="pct">3.1%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-multi" style="width:3.1%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">Native American / other</span><span class="pct">1.1%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-other" style="width:1.1%"></div></div>
+      </div>
+    </div>
+
+    <div class="county-card">
+      <div class="county-header">
+        <span class="county-name">Orange County</span>
+        <span class="county-pop">~3.2M people</span>
+      </div>
+      <div class="county-sub">3rd most populous county in California</div>
+
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">White</span><span class="pct">36.9%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-white" style="width:36.9%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">Hispanic / Latino</span><span class="pct">34.2%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-hispanic" style="width:34.2%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">Asian</span><span class="pct">22.2%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-asian" style="width:22.2%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">Two or more races</span><span class="pct">4.3%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-multi" style="width:4.3%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">Black</span><span class="pct">1.5%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-black" style="width:1.5%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="name">Native American / other</span><span class="pct">0.9%</span></div>
+        <div class="bar-track"><div class="bar-fill fill-other" style="width:0.9%"></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="areas-section">
+    <div class="section-title">Area-by-area breakdown</div>
+    <div class="areas-grid">
+
+      <div class="area-card">
+        <div class="area-name">Santa Ana <span class="area-county">· Orange Co.</span></div>
+        <div class="area-bar"><div class="bar-fill fill-hispanic" style="width:76.6%"></div></div>
+        <div class="area-line"><span>Hispanic</span><span>76.6%</span></div>
+        <div class="area-line muted"><span>Asian</span><span>12.3%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Irvine <span class="area-county">· Orange Co.</span></div>
+        <div class="area-bar"><div class="bar-fill fill-asian" style="width:44.6%"></div></div>
+        <div class="area-line"><span>Asian</span><span>44.6%</span></div>
+        <div class="area-line muted"><span>White</span><span>34.3%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Westminster / Garden Grove <span class="area-county">· Orange Co. (Little Saigon)</span></div>
+        <div class="area-bar"><div class="bar-fill fill-asian" style="width:52.8%"></div></div>
+        <div class="area-line"><span>Asian (mostly Vietnamese)</span><span>~52.8%</span></div>
+        <div class="area-line muted"><span>Hispanic</span><span>~30%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Anaheim <span class="area-county">· Orange Co.</span></div>
+        <div class="area-bar"><div class="bar-fill fill-hispanic" style="width:53%"></div></div>
+        <div class="area-line"><span>Hispanic</span><span>~53%</span></div>
+        <div class="area-line muted"><span>White</span><span>~24%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Huntington Beach <span class="area-county">· Orange Co.</span></div>
+        <div class="area-bar"><div class="bar-fill fill-white" style="width:68%"></div></div>
+        <div class="area-line"><span>White</span><span>~68%</span></div>
+        <div class="area-line muted"><span>Hispanic</span><span>~18%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Mission Viejo <span class="area-county">· South Orange Co.</span></div>
+        <div class="area-bar"><div class="bar-fill fill-white" style="width:55%"></div></div>
+        <div class="area-line"><span>White</span><span>~55%</span></div>
+        <div class="area-line muted"><span>Hispanic</span><span>~20%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Compton <span class="area-county">· LA County</span></div>
+        <div class="area-bar"><div class="bar-fill fill-hispanic" style="width:72.9%"></div></div>
+        <div class="area-line"><span>Hispanic</span><span>72.9%</span></div>
+        <div class="area-line muted"><span>Black</span><span>23.7%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">East LA / Boyle Heights <span class="area-county">· LA County</span></div>
+        <div class="area-bar"><div class="bar-fill fill-hispanic" style="width:94%"></div></div>
+        <div class="area-line"><span>Hispanic</span><span>~94%</span></div>
+        <div class="area-line muted"><span>Asian</span><span>~2%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Monterey Park <span class="area-county">· San Gabriel Valley, LA</span></div>
+        <div class="area-bar"><div class="bar-fill fill-asian" style="width:64.4%"></div></div>
+        <div class="area-line"><span>Asian</span><span>64.4%</span></div>
+        <div class="area-line muted"><span>Hispanic</span><span>26.5%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Koreatown <span class="area-county">· LA County</span></div>
+        <div class="area-bar"><div class="bar-fill fill-hispanic" style="width:55%"></div></div>
+        <div class="area-line"><span>Hispanic (residential)</span><span>~55%</span></div>
+        <div class="area-line muted"><span>Asian</span><span>~30%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">San Fernando Valley (Van Nuys / Pacoima) <span class="area-county">· LA County</span></div>
+        <div class="area-bar"><div class="bar-fill fill-hispanic" style="width:65%"></div></div>
+        <div class="area-line"><span>Hispanic</span><span>~65%</span></div>
+        <div class="area-line muted"><span>White</span><span>~20%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">West LA / Santa Monica <span class="area-county">· LA County</span></div>
+        <div class="area-bar"><div class="bar-fill fill-white" style="width:65%"></div></div>
+        <div class="area-line"><span>White</span><span>~65%</span></div>
+        <div class="area-line muted"><span>Hispanic</span><span>~15%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Long Beach <span class="area-county">· LA County</span></div>
+        <div class="area-bar"><div class="bar-fill fill-hispanic" style="width:43%"></div></div>
+        <div class="area-line"><span>Hispanic</span><span>~43%</span></div>
+        <div class="area-line muted"><span>White</span><span>~29%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Pasadena <span class="area-county">· LA County</span></div>
+        <div class="area-bar"><div class="bar-fill fill-white" style="width:40%"></div></div>
+        <div class="area-line"><span>White</span><span>~40%</span></div>
+        <div class="area-line muted"><span>Hispanic</span><span>~34%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">South Bay (Torrance) <span class="area-county">· LA County</span></div>
+        <div class="area-bar"><div class="bar-fill fill-white" style="width:38%"></div></div>
+        <div class="area-line"><span>White</span><span>~38%</span></div>
+        <div class="area-line muted"><span>Asian</span><span>~35%</span></div>
+      </div>
+
+    </div>
+
+    <div class="section-title" style="margin-top:40px;">Southeast Asian communities</div>
+    <p style="font-size:13.5px; color:rgba(246,241,228,0.6); margin:-10px 0 20px; max-width:60ch;">The county-level "Asian" figures above lump together East Asian, South Asian, and Southeast Asian groups. These are the specific Vietnamese, Cambodian, and Thai communities within LA/OC.</p>
+    <div class="areas-grid">
+
+      <div class="area-card">
+        <div class="area-name">Little Saigon <span class="area-county">· Westminster / Garden Grove, OC</span></div>
+        <div class="area-bar"><div class="bar-fill" style="width:52.8%; background:#4A9B94;"></div></div>
+        <div class="area-line"><span>Asian, mostly Vietnamese</span><span>52.8%</span></div>
+        <div class="area-line muted"><span>Largest Vietnamese community outside Vietnam</span><span></span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Cambodia Town <span class="area-county">· East Long Beach, LA County</span></div>
+        <div class="area-bar"><div class="bar-fill" style="width:20%; background:#4A9B94;"></div></div>
+        <div class="area-line"><span>Asian, mostly Cambodian</span><span>~20%</span></div>
+        <div class="area-line muted"><span>Citywide Cambodian share of Long Beach</span><span>~4%</span></div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-name">Thai Town <span class="area-county">· East Hollywood, LA County</span></div>
+        <div class="area-bar"><div class="bar-fill" style="width:3%; background:#4A9B94;"></div></div>
+        <div class="area-line"><span>Thai residents</span><span>~3%</span></div>
+        <div class="area-line muted"><span>Cultural/commercial hub; residents mostly Latino and Armenian</span><span></span></div>
+      </div>
+
+    </div>
+    <p class="note" style="margin-top:16px;">LA County holds the largest Thai population outside Thailand (~50,000 county-wide) and Long Beach holds the largest Cambodian population outside Cambodia, but neither group is a residential majority even in their namesake neighborhoods — Thai Town and Cambodia Town function more as commercial/cultural centers than population centers. Little Saigon is the exception: Vietnamese Americans are an actual residential majority of the Asian population there. If you're trying to reach these specific groups, that distinction matters for where you'd actually find people versus where you'd find their businesses and institutions.</p>
+
+    <div class="legend" id="mapLegend">
+      <div class="legend-item" data-group="hispanic"><span class="legend-dot fill-hispanic"></span>Hispanic / Latino majority</div>
+      <div class="legend-item" data-group="white"><span class="legend-dot fill-white"></span>White majority</div>
+      <div class="legend-item" data-group="asian"><span class="legend-dot fill-asian"></span>Asian majority (general)</div>
+      <div class="legend-item" data-group="seasian"><span class="legend-dot" style="background:#4A9B94;"></span>Southeast Asian enclave</div>
+      <div class="legend-item" data-group="black"><span class="legend-dot fill-black"></span>Black majority / plurality</div>
+    </div>
+    <p style="text-align:center; font-size:11.5px; color:rgba(246,241,228,0.35); margin:10px 0 0;">Hover a legend item to isolate it on the map above. Hover any region for details.</p>
+
+    <p class="note">Santa Ana, Irvine, Compton, and Monterey Park figures are sourced US Census Bureau ACS estimates. Remaining areas are approximate, based on general demographic character reported for these cities/neighborhoods — treat the tilde (~) figures as directional, not precise counts. The map divides the two counties into regions closest to each of these 17 reference points rather than using actual per-zip-code census data, since ZCTA-level demographic figures for ~200 individual zip codes aren't reliably available — treat region boundaries on the map as approximate, not authoritative for any single zip code or block.</p>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+(async function(){
+  const container = document.getElementById('realMap');
+  try{
+    const us = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json').then(r => r.json());
+
+    const counties = topojson.feature(us, us.objects.counties).features;
+    let la = counties.find(c => c.id === '06037');
+    const oc = counties.find(c => c.id === '06059');
+    if(!la || !oc){ throw new Error('County features not found'); }
+
+    if(la.geometry.type === 'MultiPolygon'){
+      let biggest = null, biggestArea = -Infinity;
+      la.geometry.coordinates.forEach(function(ring){
+        const poly = { type: 'Polygon', coordinates: ring };
+        const area = Math.abs(d3.geoArea({ type: 'Feature', geometry: poly }));
+        if(area > biggestArea){ biggestArea = area; biggest = ring; }
+      });
+      la = { type: 'Feature', id: la.id, properties: la.properties, geometry: { type: 'Polygon', coordinates: biggest } };
+    }
+
+    const areaPoints = [
+      { name: 'Santa Ana', lon: -117.8677, lat: 33.7455, color: '#B8654A', group: 'hispanic', pct: '76.6% Hispanic' },
+      { name: 'Irvine', lon: -117.8265, lat: 33.6846, color: '#7F9678', group: 'asian', pct: '44.6% Asian' },
+      { name: 'Little Saigon', lon: -117.9940, lat: 33.7514, color: '#4A9B94', group: 'seasian', pct: '52.8% Asian, mostly Vietnamese' },
+      { name: 'Anaheim', lon: -117.9143, lat: 33.8366, color: '#B8654A', group: 'hispanic', pct: '~53% Hispanic' },
+      { name: 'Huntington Beach', lon: -117.9988, lat: 33.6595, color: '#5A85B0', group: 'white', pct: '~68% White' },
+      { name: 'Mission Viejo', lon: -117.6720, lat: 33.6, color: '#5A85B0', group: 'white', pct: '~55% White' },
+      { name: 'Compton', lon: -118.2201, lat: 33.8958, color: '#B8654A', group: 'hispanic', pct: '72.9% Hispanic' },
+      { name: 'East LA', lon: -118.1728, lat: 34.0239, color: '#B8654A', group: 'hispanic', pct: '~94% Hispanic' },
+      { name: 'Monterey Park', lon: -118.1228, lat: 34.0625, color: '#7F9678', group: 'asian', pct: '64.4% Asian' },
+      { name: 'Koreatown', lon: -118.3005, lat: 34.0577, color: '#B8654A', group: 'hispanic', pct: '~55% Hispanic (residential)' },
+      { name: 'Thai Town', lon: -118.3047, lat: 34.1017, color: '#4A9B94', group: 'seasian', pct: '~3% Thai (cultural hub)' },
+      { name: 'Van Nuys', lon: -118.4108, lat: 34.2011, color: '#B8654A', group: 'hispanic', pct: '~65% Hispanic' },
+      { name: 'Santa Monica', lon: -118.4912, lat: 34.0195, color: '#5A85B0', group: 'white', pct: '~65% White' },
+      { name: 'Cambodia Town', lon: -118.1739, lat: 33.7938, color: '#4A9B94', group: 'seasian', pct: '~20% Asian, mostly Cambodian' },
+      { name: 'Long Beach', lon: -118.1937, lat: 33.7701, color: '#B8654A', group: 'hispanic', pct: '~43% Hispanic' },
+      { name: 'Pasadena', lon: -118.1445, lat: 34.1478, color: '#5A85B0', group: 'white', pct: '~40% White' },
+      { name: 'Torrance', lon: -118.3406, lat: 33.8358, color: '#5A85B0', group: 'white', pct: '~38% White' }
+    ];
+
+    const width = 480, height = 560;
+    const collection = { type: 'FeatureCollection', features: [la, oc] };
+    const projection = d3.geoMercator().fitExtent([[14,14],[width-14,height-14]], collection);
+    const path = d3.geoPath(projection);
+
+    const svg = d3.select(container).append('svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .style('width', '100%')
+      .style('display', 'block');
+
+    const clipId = 'countyClip';
+    const defs = svg.append('defs');
+    const clip = defs.append('clipPath').attr('id', clipId);
+    clip.append('path').datum(la).attr('d', path);
+    clip.append('path').datum(oc).attr('d', path);
+
+    const screenPoints = areaPoints.map(pt => projection([pt.lon, pt.lat]));
+    const delaunay = d3.Delaunay.from(screenPoints);
+    const voronoi = delaunay.voronoi([0, 0, width, height]);
+
+    const clusterGroup = svg.append('g').attr('clip-path', `url(#${clipId})`);
+
+    const tooltip = d3.select(document.body).append('div')
+      .attr('class', 'map-tooltip');
+
+    clusterGroup.selectAll('path.cluster')
+      .data(areaPoints)
+      .join('path')
+      .attr('class', 'cluster')
+      .attr('data-group', d => d.group)
+      .attr('d', (d, i) => voronoi.renderCell(i))
+      .attr('fill', d => d.color)
+      .attr('fill-opacity', 0.7)
+      .attr('stroke', 'rgba(22,29,42,0.55)')
+      .attr('stroke-width', 0.7)
+      .on('mousemove', function(event, d){
+        tooltip.style('display', 'block')
+          .style('left', (event.clientX + 14) + 'px')
+          .style('top', (event.clientY + 14) + 'px')
+          .html('<div class="tt-title">' + d.name + '</div>' + d.pct);
+      })
+      .on('mouseleave', function(){
+        tooltip.style('display', 'none');
+      });
+
+    svg.append('path')
+      .datum(la)
+      .attr('d', path)
+      .attr('fill', 'none')
+      .attr('stroke', 'var(--gold-soft)')
+      .attr('stroke-width', 1.8);
+
+    svg.append('path')
+      .datum(oc)
+      .attr('d', path)
+      .attr('fill', 'none')
+      .attr('stroke', 'var(--gold-soft)')
+      .attr('stroke-width', 1.8);
+
+    svg.selectAll('circle.marker')
+      .data(areaPoints)
+      .join('circle')
+      .attr('class', 'marker')
+      .attr('cx', (d, i) => screenPoints[i][0])
+      .attr('cy', (d, i) => screenPoints[i][1])
+      .attr('r', 2.2)
+      .attr('fill', '#161D2A')
+      .attr('stroke', '#F6F1E4')
+      .attr('stroke-width', 0.6);
+
+    const legendItems = document.querySelectorAll('#mapLegend .legend-item');
+    legendItems.forEach(function(item){
+      item.addEventListener('mouseenter', function(){
+        const g = item.getAttribute('data-group');
+        clusterGroup.selectAll('path.cluster')
+          .attr('fill-opacity', d => d.group === g ? 0.95 : 0.08)
+          .attr('stroke', d => d.group === g ? '#161D2A' : 'rgba(22,29,42,0.2)')
+          .attr('stroke-width', d => d.group === g ? 1 : 0.3);
+      });
+      item.addEventListener('mouseleave', function(){
+        clusterGroup.selectAll('path.cluster')
+          .attr('fill-opacity', 0.7)
+          .attr('stroke', 'rgba(22,29,42,0.55)')
+          .attr('stroke-width', 0.7);
+      });
+    });
+
+  }catch(err){
+    console.error('Map render error:', err);
+    container.innerHTML = '<p style="text-align:center; font-size:13px; color:rgba(246,241,228,0.5);">Map failed to load (requires an internet connection to fetch county boundary data).</p>';
+  }
+})();
+</script>
+
+</body>
+</html>
