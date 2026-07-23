@@ -19,6 +19,13 @@ app needs to visibly do more than the website does in mobile Safari. What's wire
 - **Push notifications** — registers for push on first launch (permission prompt + device token,
   logged to console for now). Wire the token to a real backend before relying on it for gathering
   reminders or new-response alerts.
+- **Add to Calendar** — the "Add to Calendar" button on the homepage opens the native
+  create-event prompt pre-filled with the gathering's dates and location. Any element with
+  `data-native-add-to-calendar` (+ `data-event-title`/`-location`/`-start`/`-end`) gets the same
+  behavior.
+- **Save to Contacts** — wired in `native-bridge.js` (`data-native-save-contact` +
+  `data-contact-name`/`-org`/`-email`/`-phone`), not yet attached to a button since there's no real
+  organizer contact info on the site to use — add one when there's an actual person/number to save.
 - **Offline support** — the existing PWA service worker (`docs/sw.js`) already caches pages, so the
   app works without a connection.
 
@@ -28,8 +35,12 @@ Still needed before submitting:
    Xcode.
 2. An actual push backend (APNs key + a server or service like OneSignal/Firebase) to send
    notifications — right now the app only registers and logs the token.
-3. Run `npm install` (pulls in `@capacitor/share` and `@capacitor/push-notifications`, already
-   added to `package.json`) then `npx cap sync ios` before opening Xcode.
+3. Run `npm install` (pulls in `@capacitor/share`, `@capacitor/push-notifications`,
+   `@ebarooni/capacitor-calendar`, and `@capacitor-community/contacts`, already added to
+   `package.json`) then `npx cap sync ios` before opening Xcode.
+4. `Info.plist` already has the required `NSCalendarsFullAccessUsageDescription`,
+   `NSCalendarsWriteOnlyAccessUsageDescription`, and `NSContactsUsageDescription` strings — Xcode
+   will otherwise crash the app the first time it requests either permission.
 
 ## Running the website locally
 
