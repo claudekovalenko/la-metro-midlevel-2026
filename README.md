@@ -5,8 +5,31 @@ Site + native iOS wrapper for the LA Metro Midlevel 2026 gathering (application 
 ## Structure
 
 - `docs/` — the actual website (plain HTML/CSS/JS, no build step). This is also what GitHub Pages serves and what the iOS app displays.
-- `ios/` — a native Xcode project (via [Capacitor](https://capacitorjs.com)) that wraps `docs/` in a real iOS app shell. Nothing was rebuilt natively — it loads the same site.
+- `docs/native-bridge.js` — loaded on every page; a no-op on plain web, but when running inside the Capacitor app it wires up native share (`[data-native-share]` buttons) and push notification registration. This exists so the App Store build offers real native functionality beyond a website in a webview (see Guideline 4.2 below).
+- `ios/` — a native Xcode project (via [Capacitor](https://capacitorjs.com)) that wraps `docs/` in a real iOS app shell.
 - `capacitor.config.json` — points the native wrapper at `docs/`.
+
+## App Store readiness (Guideline 4.2 — Minimum Functionality)
+
+Apple routinely rejects apps that are just a website wrapped in a webview. To clear review, this
+app needs to visibly do more than the website does in mobile Safari. What's wired up so far:
+
+- **Native share sheet** — the "Share Map" button on the network map (and any element with
+  `data-native-share`) uses the real iOS share sheet, not a browser share API.
+- **Push notifications** — registers for push on first launch (permission prompt + device token,
+  logged to console for now). Wire the token to a real backend before relying on it for gathering
+  reminders or new-response alerts.
+- **Offline support** — the existing PWA service worker (`docs/sw.js`) already caches pages, so the
+  app works without a connection.
+
+Still needed before submitting:
+1. In Xcode: App target → Signing & Capabilities → **+ Capability → Push Notifications** (and
+   Background Modes → Remote notifications if you want silent pushes). This can't be done outside
+   Xcode.
+2. An actual push backend (APNs key + a server or service like OneSignal/Firebase) to send
+   notifications — right now the app only registers and logs the token.
+3. Run `npm install` (pulls in `@capacitor/share` and `@capacitor/push-notifications`, already
+   added to `package.json`) then `npx cap sync ios` before opening Xcode.
 
 ## Running the website locally
 

@@ -99,6 +99,13 @@
     <div class="legend-item"><span class="legend-dot" style="background:var(--gen-boomer)"></span> Boomer</div>
   </div>
 
+  <button
+    data-native-share
+    data-share-title="SoCal Network Map"
+    data-share-text="Check out the LA Metro Midlevel network map"
+    style="display:none; margin-bottom:20px; padding:8px 16px; font-size:13px; font-weight:600; border:1px solid var(--line); border-radius:6px; background:none; color:var(--gold-soft); cursor:pointer;"
+  >Share Map</button>
+
   <div id="graph-wrap"></div>
 
   <details>
@@ -230,6 +237,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
 }
 </script>
+<script src="native-bridge.js"></script>
 
 </body>
 </html>
