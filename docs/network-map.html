@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoCal Network Map — LA Metro Midlevel</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#161D2A">
+<link rel="icon" href="icons/icon-512.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#F6F1E4;
+    --night:#1F2A3C;
+    --night-deep:#161D2A;
+    --gold:#D9A441;
+    --gold-soft:#E8C374;
+    --line: rgba(246,241,228,0.16);
+    --gen-z: #B8654A;
+    --gen-millennial: #D9A441;
+    --gen-x: #7F9678;
+    --gen-boomer: #6E8FAE;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--night-deep); color:var(--ink); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; }
+  nav{
+    position: sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+    padding:18px 24px; background: rgba(22,29,42,0.92); backdrop-filter: blur(6px); border-bottom:1px solid var(--line);
+  }
+  .nav-logo{ font-family:'Fraunces', serif; font-style:italic; font-weight:600; font-size:17px; color:var(--gold-soft); text-decoration:none; }
+  .nav-links{ display:flex; gap:22px; list-style:none; margin:0; padding:0; }
+  .nav-links a{ color: rgba(246,241,228,0.7); text-decoration:none; font-size:13.5px; font-weight:500; }
+  .nav-links a:hover{ color: var(--gold); }
+
+  .wrap{ max-width: 1000px; margin: 0 auto; padding: 48px 24px 80px; }
+  .eyebrow{ font-size:13px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold-soft); margin-bottom:14px; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size: clamp(1.8rem, 4vw, 2.6rem); margin:0 0 14px; }
+  .lede{ font-size:15px; line-height:1.6; color: rgba(246,241,228,0.72); max-width:60ch; margin:0 0 30px; }
+
+  .legend{ display:flex; gap:16px; flex-wrap:wrap; margin-bottom:24px; }
+  .legend-item{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:rgba(246,241,228,0.75); }
+  .legend-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+
+  #graph-wrap{
+    border:1px solid var(--line); border-radius:10px; background: rgba(246,241,228,0.02);
+    overflow:auto;
+  }
+  svg{ display:block; }
+  .node circle{ stroke: rgba(0,0,0,0.25); stroke-width:1; cursor:pointer; }
+  .node text{ fill: var(--ink); font-size:11px; font-family:'Inter',sans-serif; pointer-events:none; }
+  .cluster-label{ fill: var(--gold-soft); font-family:'Fraunces', serif; font-style:italic; font-size:15px; }
+  .edge{ stroke: rgba(246,241,228,0.18); stroke-width:1; }
+  .empty-state{ padding:60px 20px; text-align:center; color:rgba(246,241,228,0.5); font-size:14px; }
+
+  .tooltip{
+    position:fixed; pointer-events:none; background: var(--night); border:1px solid var(--gold);
+    color:var(--ink); padding:8px 12px; border-radius:6px; font-size:12.5px; line-height:1.5;
+    display:none; max-width:240px; z-index:100;
+  }
+  .tooltip b{ color: var(--gold-soft); }
+
+  details{ margin-top:32px; border:1px solid var(--line); border-radius:8px; padding:16px 20px; }
+  details summary{ cursor:pointer; font-weight:600; font-size:14px; color: var(--gold-soft); }
+  details p{ color: rgba(246,241,228,0.6); font-size:13px; line-height:1.6; }
+  details a{ color: var(--gold); }
+  details input[type=password]{
+    width:100%; background: rgba(246,241,228,0.05); border:1px solid var(--line); color:var(--ink);
+    padding:10px 12px; border-radius:6px; font-size:14px; margin-top:6px;
+  }
+  details button{
+    margin-top:10px; padding:9px 16px; font-size:13.5px; font-weight:600; border:none; border-radius:6px;
+    background: var(--gold); color: var(--night-deep); cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">LA Metro Midlevel</a>
+  <ul class="nav-links">
+    <li><a href="gospel-workers-application.html">Apply</a></li>
+    <li><a href="socal-people-groups-breakdown.html">SoCal Breakdown</a></li>
+    <li><a href="network-map.html">Network Map</a></li>
+  </ul>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow">SoCal Network · Populated from the survey</div>
+  <h1>Gospel Workers Network Map</h1>
+  <p class="lede">Every node is a survey respondent, clustered by their area of Southern California and colored
+     by generation. People at the same church are connected. New responses get added from the
+     <a href="gospel-workers-application.html" style="color:var(--gold);">survey's admin panel</a>.</p>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--gen-z)"></span> Gen Z</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--gen-millennial)"></span> Millennial</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--gen-x)"></span> Gen X</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--gen-boomer)"></span> Boomer</div>
+  </div>
+
+  <div id="graph-wrap"></div>
+
+  <details>
+    <summary>GitHub access token (needed to add responses from the survey admin panel)</summary>
+    <p>Create a fine-grained <a href="https://github.com/settings/tokens?type=beta" target="_blank">GitHub token</a>
+       with read/write access to this repo's contents. It's shared with the survey page (stored in this browser's
+       localStorage only) so "Add to Network Map" there can save here.</p>
+    <label>GitHub Token</label>
+    <input type="password" id="ghToken">
+    <button id="save-token">Save Token</button>
+  </details>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+const OWNER = "claudekovalenko";
+const REPO = "la-metro-midlevel-2026";
+const BRANCH = "claude/mls-email-website-5eoait";
+const PATH = "docs/data/network.json";
+
+const GEN_COLORS = {
+  "Gen Z": "var(--gen-z)",
+  "Millennial": "var(--gen-millennial)",
+  "Gen X": "var(--gen-x)",
+  "Boomer": "var(--gen-boomer)",
+};
+
+document.getElementById("ghToken").value = localStorage.getItem("gh_token") || "";
+document.getElementById("save-token").addEventListener("click", () => {
+  localStorage.setItem("gh_token", document.getElementById("ghToken").value.trim());
+});
+
+async function loadNetwork() {
+  const graphWrap = document.getElementById("graph-wrap");
+  try {
+    const res = await fetch(`data/network.json?_=${Date.now()}`);
+    if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+    const people = await res.json();
+    renderGraph(people);
+  } catch (err) {
+    graphWrap.innerHTML = `<div class="empty-state">Could not load network data: ${err.message}</div>`;
+  }
+}
+
+function renderGraph(people) {
+  const graphWrap = document.getElementById("graph-wrap");
+  if (!people || people.length === 0) {
+    graphWrap.innerHTML = '<div class="empty-state">No responses added to the network map yet.</div>';
+    return;
+  }
+
+  const areas = {};
+  people.forEach(p => {
+    const area = p.area || "Unspecified";
+    (areas[area] = areas[area] || []).push(p);
+  });
+
+  const clusterWidth = 260;
+  const clusterHeight = 220;
+  const cols = Math.max(1, Math.min(3, Object.keys(areas).length));
+  const width = clusterWidth * cols + 40;
+  const rows = Math.ceil(Object.keys(areas).length / cols);
+  const height = clusterHeight * rows + 40;
+
+  let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`;
+
+  const churchGroups = {};
+  people.forEach((p, i) => { p.__idx = i; });
+
+  Object.entries(areas).forEach(([area, members], clusterIdx) => {
+    const col = clusterIdx % cols;
+    const row = Math.floor(clusterIdx / cols);
+    const cx = 20 + col * clusterWidth + clusterWidth / 2;
+    const cy = 20 + row * clusterHeight + clusterHeight / 2 + 14;
+
+    svg += `<text class="cluster-label" x="${cx}" y="${20 + row * clusterHeight + 20}" text-anchor="middle">${area}</text>`;
+
+    const radius = Math.min(80, 30 + members.length * 6);
+    const positions = members.map((m, i) => {
+      const angle = (i / members.length) * Math.PI * 2;
+      return {
+        person: m,
+        x: cx + Math.cos(angle) * radius,
+        y: cy + Math.sin(angle) * radius,
+      };
+    });
+
+    // edges between same-church members within this cluster
+    for (let i = 0; i < positions.length; i++) {
+      for (let j = i + 1; j < positions.length; j++) {
+        if (positions[i].person.church && positions[i].person.church === positions[j].person.church) {
+          svg += `<line class="edge" x1="${positions[i].x}" y1="${positions[i].y}" x2="${positions[j].x}" y2="${positions[j].y}" />`;
+        }
+      }
+    }
+
+    positions.forEach(({ person, x, y }) => {
+      const color = GEN_COLORS[person.generation] || "#9aa5ad";
+      const initials = (person.name || "?").split(" ").map(s => s[0]).join("").slice(0, 2).toUpperCase();
+      svg += `<g class="node" data-idx="${person.__idx}">
+        <circle cx="${x}" cy="${y}" r="16" fill="${color}" />
+        <text x="${x}" y="${y + 4}" text-anchor="middle" font-size="10" fill="#161D2A" font-weight="600">${initials}</text>
+      </g>`;
+    });
+  });
+
+  svg += `</svg>`;
+  graphWrap.innerHTML = svg;
+
+  const tooltip = document.getElementById("tooltip");
+  graphWrap.querySelectorAll(".node").forEach(node => {
+    const person = people[Number(node.dataset.idx)];
+    node.addEventListener("mousemove", (e) => {
+      tooltip.style.display = "block";
+      tooltip.style.left = (e.clientX + 14) + "px";
+      tooltip.style.top = (e.clientY + 14) + "px";
+      tooltip.innerHTML = `<b>${person.name}</b><br>${person.church || "—"}<br>${person.area || "—"} · ${person.generation || "—"}`;
+    });
+    node.addEventListener("mouseleave", () => { tooltip.style.display = "none"; });
+  });
+}
+
+loadNetwork();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+}
+</script>
+
+</body>
+</html>

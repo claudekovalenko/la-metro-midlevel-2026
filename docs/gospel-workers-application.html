@@ -324,6 +324,7 @@
   <ul class="nav-links">
     <li><a href="gospel-workers-application.html">Apply</a></li>
     <li><a href="socal-people-groups-breakdown.html">SoCal Breakdown</a></li>
+    <li><a href="network-map.html">Network Map</a></li>
   </ul>
 </nav>
 
@@ -394,6 +395,17 @@
     </div>
 
     <div class="field">
+      <label for="generation">Generation</label>
+      <select id="generation" required>
+        <option value="" disabled selected>Select one</option>
+        <option value="Gen Z">Gen Z</option>
+        <option value="Millennial">Millennial</option>
+        <option value="Gen X">Gen X</option>
+        <option value="Boomer">Boomer</option>
+      </select>
+    </div>
+
+    <div class="field">
       <label for="wins">Wins over the past two years</label>
       <textarea id="wins" placeholder="What's gone well in reaching people in Southern California over the last two years?"></textarea>
     </div>
@@ -439,6 +451,7 @@ form.addEventListener('submit', async (e)=>{
     phone: document.getElementById('phone').value.trim(),
     church: document.getElementById('church').value.trim(),
     laArea: document.getElementById('laArea').value.trim(),
+    generation: document.getElementById('generation').value,
     wins: document.getElementById('wins').value.trim(),
     barriers: document.getElementById('barriers').value.trim(),
     submittedAt: new Date().toISOString()
@@ -449,8 +462,7 @@ form.addEventListener('submit', async (e)=>{
 
   try{
     const key = 'survey:' + Date.now() + ':' + Math.random().toString(36).slice(2,7);
-    const result = await window.storage.set(key, JSON.stringify(entry), true);
-    if(!result){ throw new Error('Storage returned no result'); }
+    localStorage.setItem(key, JSON.stringify(entry));
     form.style.display = 'none';
     confirmCard.style.display = 'block';
     statusMsg.textContent = '';
@@ -475,23 +487,23 @@ adminToggle.addEventListener('click', async ()=>{
   }
   adminToggle.textContent = 'loading…';
   try{
-    const list = await window.storage.list('survey:', true);
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('survey:'));
     adminList.innerHTML = '';
-    if(!list || !list.keys || list.keys.length === 0){
-      adminList.innerHTML = '<p style="color:rgba(246,241,228,0.5); font-size:13.5px;">No responses yet.</p>';
+    if(keys.length === 0){
+      adminList.innerHTML = '<p style="color:rgba(246,241,228,0.5); font-size:13.5px;">No responses yet (responses are stored per-browser).</p>';
     } else {
-      for(const key of list.keys){
+      for(const key of keys){
         try{
-          const res = await window.storage.get(key, true);
-          if(res && res.value){
-            const d = JSON.parse(res.value);
-            const card = document.createElement('div');
-            card.className = 'app-card';
-            card.innerHTML = `<b>${d.name}</b><br>${d.church} · ${d.laArea}<br>${d.email} · ${d.phone}${d.wins ? '<br>Wins (2 yrs): '+d.wins : ''}${d.barriers ? '<br>Barriers: '+d.barriers : ''}`;
-            adminList.appendChild(card);
-          }
+          const d = JSON.parse(localStorage.getItem(key));
+          const card = document.createElement('div');
+          card.className = 'app-card';
+          card.innerHTML = `<b>${d.name}</b> <span style="color:rgba(246,241,228,0.5)">${d.generation || ''}</span><br>${d.church} · ${d.laArea}<br>${d.email} · ${d.phone}${d.wins ? '<br>Wins (2 yrs): '+d.wins : ''}${d.barriers ? '<br>Barriers: '+d.barriers : ''}<br><button class="sync-btn" data-key="${key}" style="margin-top:8px; font-size:12px; background:none; border:1px solid var(--line); color:var(--gold-soft); padding:5px 10px; border-radius:4px; cursor:pointer;">Add to Network Map</button>`;
+          adminList.appendChild(card);
         }catch(e){ console.error('Failed to load entry', key, e); }
       }
+      adminList.querySelectorAll('.sync-btn').forEach(btn => {
+        btn.addEventListener('click', () => addEntryToNetworkMap(btn.dataset.key, btn));
+      });
     }
     adminPanel.style.display = 'block';
     adminToggle.textContent = 'hide responses';
@@ -500,6 +512,44 @@ adminToggle.addEventListener('click', async ()=>{
     adminToggle.textContent = 'view responses';
   }
 });
+
+async function addEntryToNetworkMap(key, btn){
+  const token = localStorage.getItem('gh_token');
+  if(!token){
+    alert('Add a GitHub token on the Network Map page first (needed to save).');
+    return;
+  }
+  const entry = JSON.parse(localStorage.getItem(key));
+  const OWNER = 'claudekovalenko', REPO = 'la-metro-midlevel-2026', BRANCH = 'claude/mls-email-website-5eoait', PATH = 'docs/data/network.json';
+  btn.disabled = true;
+  btn.textContent = 'Adding…';
+  try{
+    const apiUrl = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}?ref=${BRANCH}`;
+    const getRes = await fetch(apiUrl);
+    const getData = await getRes.json();
+    const sha = getData.sha;
+    const current = JSON.parse(atob(getData.content));
+    current.push({
+      name: entry.name, church: entry.church, area: entry.laArea,
+      generation: entry.generation, submittedAt: entry.submittedAt
+    });
+    const putRes = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' },
+      body: JSON.stringify({
+        message: `Add ${entry.name} to network map`,
+        content: btoa(JSON.stringify(current, null, 2) + '\n'),
+        sha, branch: BRANCH
+      })
+    });
+    if(!putRes.ok){ const e = await putRes.json().catch(()=>({})); throw new Error(e.message || putRes.status); }
+    btn.textContent = 'Added ✓';
+  }catch(err){
+    console.error(err);
+    btn.textContent = 'Failed — retry';
+    btn.disabled = false;
+  }
+}
 </script>
 
 <script>
