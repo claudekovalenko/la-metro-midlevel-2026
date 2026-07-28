@@ -500,20 +500,52 @@
       </div>
     </div>
 
+    <div class="section-label">The church circle</div>
+
     <div class="field">
-      <label>Elements found in your church circle</label>
+      <label>What's being done well (check all that apply)</label>
       <div class="checklist">
-        <div class="check-item"><input type="checkbox" id="el-word" value="Word / scripture"><label for="el-word">Word / scripture</label></div>
-        <div class="check-item"><input type="checkbox" id="el-prayer" value="Prayer"><label for="el-prayer">Prayer</label></div>
-        <div class="check-item"><input type="checkbox" id="el-worship" value="Worship"><label for="el-worship">Worship</label></div>
-        <div class="check-item"><input type="checkbox" id="el-fellowship" value="Fellowship"><label for="el-fellowship">Fellowship</label></div>
-        <div class="check-item"><input type="checkbox" id="el-communion" value="Communion"><label for="el-communion">Communion</label></div>
-        <div class="check-item"><input type="checkbox" id="el-giving" value="Giving / sharing resources"><label for="el-giving">Giving / sharing resources</label></div>
-        <div class="check-item"><input type="checkbox" id="el-accountability" value="Accountability"><label for="el-accountability">Accountability</label></div>
-        <div class="check-item"><input type="checkbox" id="el-leadership" value="Leadership development"><label for="el-leadership">Leadership development</label></div>
-        <div class="check-item"><input type="checkbox" id="el-mission" value="Mission / multiplication"><label for="el-mission">Mission / multiplication</label></div>
-        <div class="check-item"><input type="checkbox" id="el-baptism" value="Baptism"><label for="el-baptism">Baptism</label></div>
+        <div class="check-item"><input type="checkbox" id="well-lordship" value="Lordship of Christ"><label for="well-lordship">Lordship of Christ</label></div>
+        <div class="check-item"><input type="checkbox" id="well-repentance" value="Repentance &amp; faith"><label for="well-repentance">Repentance &amp; faith</label></div>
+        <div class="check-item"><input type="checkbox" id="well-baptism" value="Baptism"><label for="well-baptism">Baptism</label></div>
+        <div class="check-item"><input type="checkbox" id="well-spirit" value="Spirit Led"><label for="well-spirit">Spirit Led</label></div>
+        <div class="check-item"><input type="checkbox" id="well-word" value="Word of God"><label for="well-word">Word of God</label></div>
+        <div class="check-item"><input type="checkbox" id="well-love" value="Love"><label for="well-love">Love</label></div>
+        <div class="check-item"><input type="checkbox" id="well-communion" value="Communion"><label for="well-communion">Communion</label></div>
+        <div class="check-item"><input type="checkbox" id="well-prayer" value="Prayer"><label for="well-prayer">Prayer</label></div>
+        <div class="check-item"><input type="checkbox" id="well-obedience" value="Obedience"><label for="well-obedience">Obedience</label></div>
+        <div class="check-item"><input type="checkbox" id="well-fellowship" value="Fellowship"><label for="well-fellowship">Fellowship</label></div>
+        <div class="check-item"><input type="checkbox" id="well-worship" value="Worship"><label for="well-worship">Worship</label></div>
+        <div class="check-item"><input type="checkbox" id="well-multiplication" value="Multiplication"><label for="well-multiplication">Multiplication</label></div>
       </div>
+    </div>
+
+    <div class="field">
+      <label for="doingWell">Say more about what's being done well</label>
+      <textarea id="doingWell" placeholder="What do you see the church circle doing well right now?"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Where the church or gathering could grow (check all that apply)</label>
+      <div class="checklist">
+        <div class="check-item"><input type="checkbox" id="grow-lordship" value="Lordship of Christ"><label for="grow-lordship">Lordship of Christ</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-repentance" value="Repentance &amp; faith"><label for="grow-repentance">Repentance &amp; faith</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-baptism" value="Baptism"><label for="grow-baptism">Baptism</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-spirit" value="Spirit Led"><label for="grow-spirit">Spirit Led</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-word" value="Word of God"><label for="grow-word">Word of God</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-love" value="Love"><label for="grow-love">Love</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-communion" value="Communion"><label for="grow-communion">Communion</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-prayer" value="Prayer"><label for="grow-prayer">Prayer</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-obedience" value="Obedience"><label for="grow-obedience">Obedience</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-fellowship" value="Fellowship"><label for="grow-fellowship">Fellowship</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-worship" value="Worship"><label for="grow-worship">Worship</label></div>
+        <div class="check-item"><input type="checkbox" id="grow-multiplication" value="Multiplication"><label for="grow-multiplication">Multiplication</label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="couldGrow">Say more about where the church or gathering could grow</label>
+      <textarea id="couldGrow" placeholder="Where do you see room to grow or improve?"></textarea>
     </div>
 
     <div class="section-label">Where and how you meet</div>
@@ -584,8 +616,10 @@ form.addEventListener('submit', async (e)=>{
   statusMsg.textContent = '';
   statusMsg.className = 'status';
 
-  const elements = [];
-  document.querySelectorAll('.checklist input[type=checkbox]:checked').forEach(cb => elements.push(cb.value));
+  const wellElements = [];
+  document.querySelectorAll('input[id^="well-"]:checked').forEach(cb => wellElements.push(cb.value));
+  const growElements = [];
+  document.querySelectorAll('input[id^="grow-"]:checked').forEach(cb => growElements.push(cb.value));
 
   const entry = {
     name: document.getElementById('fullName').value.trim(),
@@ -604,7 +638,10 @@ form.addEventListener('submit', async (e)=>{
     baptisms: Number(document.getElementById('baptisms').value || 0),
     consistentMembers: Number(document.getElementById('consistentMembers').value || 0),
     comeAndGo: Number(document.getElementById('comeAndGo').value || 0),
-    healthElements: elements,
+    doingWellElements: wellElements,
+    doingWell: document.getElementById('doingWell').value.trim(),
+    couldGrowElements: growElements,
+    couldGrow: document.getElementById('couldGrow').value.trim(),
     meetingLocation: document.getElementById('meetingLocation').value.trim(),
     multipleHouses: document.getElementById('multipleHouses').checked,
     sharedMeal: document.getElementById('sharedMeal').checked,
@@ -660,7 +697,8 @@ adminToggle.addEventListener('click', async ()=>{
               + `Baptisms: ${d.baptisms || 0} · Consistent: ${d.consistentMembers || 0} · Come &amp; go: ${d.comeAndGo || 0}<br>`
               + `Meets: ${d.meetingLocation || '—'}${d.multipleHouses ? ' (multiple houses)' : ''}${d.sharedMeal ? ' · shares a meal' : ''}<br>`
               + `${d.meetingDay || ''} ${d.meetingTime || ''}<br>`
-              + `Health elements: ${(d.healthElements || []).join(', ') || '—'}`
+              + `${(d.doingWellElements && d.doingWellElements.length) ? 'Doing well (checked): '+d.doingWellElements.join(', ') : ''}${d.doingWell ? '<br>Doing well: '+d.doingWell : ''}`
+              + `${(d.couldGrowElements && d.couldGrowElements.length) ? '<br>Could grow (checked): '+d.couldGrowElements.join(', ') : ''}${d.couldGrow ? '<br>Could grow: '+d.couldGrow : ''}`
               + `${d.wins ? '<br>Wins: '+d.wins : ''}${d.challenges ? '<br>Challenges: '+d.challenges : ''}`
               + `${d.prayerTime ? '<br>Prayer time: '+d.prayerTime : ''}`
               + `${d.scriptureWord ? '<br>Word: '+d.scriptureWord : ''}${d.scriptureWorks ? '<br>Works: '+d.scriptureWorks : ''}${d.scriptureWineskins ? '<br>Wineskins: '+d.scriptureWineskins : ''}`;
