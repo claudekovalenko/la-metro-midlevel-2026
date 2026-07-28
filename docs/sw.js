@@ -1,7 +1,8 @@
-const CACHE_NAME = 'la-metro-midlevel-v1';
+const CACHE_NAME = 'la-metro-midlevel-v2';
 const PRECACHE_URLS = [
   './index.html',
   './gospel-workers-application.html',
+  './church-health-survey.html',
   './socal-people-groups-breakdown.html',
   './manifest.json',
   './icons/icon-192.png',
