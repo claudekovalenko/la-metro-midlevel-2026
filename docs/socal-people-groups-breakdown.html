@@ -84,6 +84,19 @@
     margin-bottom: 20px;
   }
 
+  .map-section{
+    display:flex;
+    align-items:flex-start;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .map-col{ flex: 1 1 520px; min-width:0; }
+  .map-purpose{ flex: 1 1 280px; padding-top: 4px; }
+  @media (max-width: 780px){
+    .map-section{ flex-direction:column; }
+    .map-purpose{ order:-1; }
+  }
+
   .counties{
     display:grid;
     grid-template-columns: 1fr 1fr;
@@ -305,7 +318,6 @@
   <a class="nav-logo" href="index.html">LA Metro Midlevel</a>
   <ul class="nav-links">
     <li><a href="gospel-workers-application.html">Apply</a></li>
-    <li><a href="church-health-survey.html">Church Health</a></li>
     <li><a href="socal-people-groups-breakdown.html">SoCal Breakdown</a></li>
   </ul>
 </nav>
@@ -317,8 +329,15 @@
   <p class="lede">A snapshot of the ethnic and racial makeup of Los Angeles County and Orange County, zoomed to just these two counties, with zip codes clustered and colored by the majority group nearest to that area.</p>
 
   <div class="map-section">
-    <div id="realMap" style="width:100%; max-width:520px; margin:0 auto;"></div>
-    <p style="text-align:center; font-size:12px; color:rgba(246,241,228,0.4); margin:12px 0 40px;">County shapes from US Census Bureau TIGER boundary data. Regions are drawn around 17 known reference points and clipped to the actual county outlines — not literal zip code lines, but a close visual stand-in given real per-zip data isn't reliably available.</p>
+    <div class="map-col">
+      <div id="realMap" style="width:100%; max-width:520px; margin:0 auto;"></div>
+      <p style="text-align:center; font-size:12px; color:rgba(246,241,228,0.4); margin:12px 0 0;">County shapes from US Census Bureau TIGER boundary data. Regions are drawn around 17 known reference points and clipped to the actual county outlines — not literal zip code lines, but a close visual stand-in given real per-zip data isn't reliably available.</p>
+    </div>
+    <div class="map-purpose">
+      <div class="section-title" style="margin-bottom:14px;">Why this map</div>
+      <p class="lede" style="margin-bottom:14px;">This is a working reference, not just a picture — it's here to make the demographics of Southern California visible at a glance, so teams can see who actually lives in the areas they're already serving.</p>
+      <p class="lede" style="margin:0;">Use it to spot the people groups near your church or gathering that you may not yet be reaching, and to shape how you plan outreach, language, and partnerships going into the gathering.</p>
+    </div>
   </div>
 
   <div class="section-title">County summary</div>
