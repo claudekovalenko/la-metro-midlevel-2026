@@ -424,16 +424,6 @@
       <input type="text" id="laArea" placeholder="e.g. South LA, Inland Empire, San Diego, Orange County" required>
     </div>
 
-    <div class="inline-check">
-      <input type="checkbox" id="hasElders">
-      <label for="hasElders">Our church has elders</label>
-    </div>
-
-    <div class="field">
-      <label for="elders">Elder names &amp; contact information</label>
-      <textarea id="elders" placeholder="List each elder's name, email, and phone number, e.g.&#10;Jordan Reyes — jordan@church.org — (323) 555-0148"></textarea>
-    </div>
-
     <div class="section-label">Wins &amp; challenges</div>
 
     <div class="field">
@@ -449,32 +439,6 @@
     <div class="field">
       <label for="prayerTime">Time in prayer / with the Lord</label>
       <textarea id="prayerTime" placeholder="How is your church spending time in prayer or with the Lord right now — as individuals and together?"></textarea>
-    </div>
-
-    <div class="section-label">Church health section</div>
-
-    <div class="inline-check">
-      <input type="checkbox" id="churchHealthAlreadyDone">
-      <label for="churchHealthAlreadyDone">A leader from my church/gathering already filled this section out for us</label>
-    </div>
-    <p class="hint" style="margin-bottom:22px;">Baptisms, attendance, the church circle checklist, and meeting details only need to come from one person per church or gathering. Check this if that's already been submitted, and skip straight to the button below.</p>
-
-    <div id="churchHealthSection">
-
-    <div class="row3">
-      <div class="field">
-        <label for="baptisms">Number of baptisms</label>
-        <input type="number" id="baptisms" min="0" step="1" placeholder="0">
-      </div>
-      <div class="field">
-        <label for="consistentMembers">Consistent members attending</label>
-        <input type="number" id="consistentMembers" min="0" step="1" placeholder="0">
-      </div>
-      <div class="field">
-        <label for="comeAndGo">People who come and go</label>
-        <input type="number" id="comeAndGo" min="0" step="1" placeholder="0">
-        <p class="hint">Visitors or inconsistent attenders, not counted above.</p>
-      </div>
     </div>
 
     <div class="section-label">The church circle</div>
@@ -523,6 +487,42 @@
     <div class="field">
       <label for="couldGrow">Say more about where the church or gathering could grow</label>
       <textarea id="couldGrow" placeholder="Where do you see room to grow or improve?"></textarea>
+    </div>
+
+    <div class="section-label">Church health section</div>
+
+    <div class="inline-check">
+      <input type="checkbox" id="churchHealthAlreadyDone">
+      <label for="churchHealthAlreadyDone">A leader from my church/gathering already filled this section out for us</label>
+    </div>
+    <p class="hint" style="margin-bottom:22px;">Elder info, baptisms, attendance, and meeting details only need to come from one person per church or gathering. Check this if that's already been submitted, and skip straight to the button below.</p>
+
+    <div id="churchHealthSection">
+
+    <div class="inline-check">
+      <input type="checkbox" id="hasElders">
+      <label for="hasElders">Our church has elders</label>
+    </div>
+
+    <div class="field">
+      <label for="elders">Elder names &amp; contact information</label>
+      <textarea id="elders" placeholder="List each elder's name, email, and phone number, e.g.&#10;Jordan Reyes — jordan@church.org — (323) 555-0148"></textarea>
+    </div>
+
+    <div class="row3">
+      <div class="field">
+        <label for="baptisms">Number of baptisms</label>
+        <input type="number" id="baptisms" min="0" step="1" placeholder="0">
+      </div>
+      <div class="field">
+        <label for="consistentMembers">Consistent members attending</label>
+        <input type="number" id="consistentMembers" min="0" step="1" placeholder="0">
+      </div>
+      <div class="field">
+        <label for="comeAndGo">People who come and go</label>
+        <input type="number" id="comeAndGo" min="0" step="1" placeholder="0">
+        <p class="hint">Visitors or inconsistent attenders, not counted above.</p>
+      </div>
     </div>
 
     <div class="section-label">Where and how you meet</div>
@@ -623,10 +623,8 @@ form.addEventListener('submit', async (e)=>{
 
   const wellElements = [];
   const growElements = [];
-  if(!alreadyDone){
-    document.querySelectorAll('input[id^="well-"]:checked').forEach(cb => wellElements.push(cb.value));
-    document.querySelectorAll('input[id^="grow-"]:checked').forEach(cb => growElements.push(cb.value));
-  }
+  document.querySelectorAll('input[id^="well-"]:checked').forEach(cb => wellElements.push(cb.value));
+  document.querySelectorAll('input[id^="grow-"]:checked').forEach(cb => growElements.push(cb.value));
 
   const entry = {
     name: document.getElementById('fullName').value.trim(),
@@ -634,22 +632,22 @@ form.addEventListener('submit', async (e)=>{
     phone: document.getElementById('phone').value.trim(),
     church: document.getElementById('church').value.trim(),
     laArea: document.getElementById('laArea').value.trim(),
-    hasElders: document.getElementById('hasElders').checked,
-    elders: document.getElementById('elders').value.trim(),
     wins: document.getElementById('wins').value.trim(),
     challenges: document.getElementById('challenges').value.trim(),
     prayerTime: document.getElementById('prayerTime').value.trim(),
     scriptureWord: document.getElementById('scriptureWord').value.trim(),
     scriptureWorks: document.getElementById('scriptureWorks').value.trim(),
     scriptureWineskins: document.getElementById('scriptureWineskins').value.trim(),
+    doingWellElements: wellElements,
+    doingWell: document.getElementById('doingWell').value.trim(),
+    couldGrowElements: growElements,
+    couldGrow: document.getElementById('couldGrow').value.trim(),
     churchHealthAlreadyDone: alreadyDone,
+    hasElders: alreadyDone ? false : document.getElementById('hasElders').checked,
+    elders: alreadyDone ? '' : document.getElementById('elders').value.trim(),
     baptisms: alreadyDone ? null : Number(document.getElementById('baptisms').value || 0),
     consistentMembers: alreadyDone ? null : Number(document.getElementById('consistentMembers').value || 0),
     comeAndGo: alreadyDone ? null : Number(document.getElementById('comeAndGo').value || 0),
-    doingWellElements: wellElements,
-    doingWell: alreadyDone ? '' : document.getElementById('doingWell').value.trim(),
-    couldGrowElements: growElements,
-    couldGrow: alreadyDone ? '' : document.getElementById('couldGrow').value.trim(),
     meetingLocation: alreadyDone ? '' : document.getElementById('meetingLocation').value.trim(),
     multipleHouses: alreadyDone ? false : document.getElementById('multipleHouses').checked,
     sharedMeal: alreadyDone ? false : document.getElementById('sharedMeal').checked,
