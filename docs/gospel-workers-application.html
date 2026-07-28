@@ -451,7 +451,15 @@
       <textarea id="prayerTime" placeholder="How is your church spending time in prayer or with the Lord right now — as individuals and together?"></textarea>
     </div>
 
-    <div class="section-label">Church health metrics</div>
+    <div class="section-label">Church health section</div>
+
+    <div class="inline-check">
+      <input type="checkbox" id="churchHealthAlreadyDone">
+      <label for="churchHealthAlreadyDone">A leader from my church/gathering already filled this section out for us</label>
+    </div>
+    <p class="hint" style="margin-bottom:22px;">Baptisms, attendance, the church circle checklist, and meeting details only need to come from one person per church or gathering. Check this if that's already been submitted, and skip straight to the button below.</p>
+
+    <div id="churchHealthSection">
 
     <div class="row3">
       <div class="field">
@@ -555,6 +563,8 @@
       </div>
     </div>
 
+    </div>
+
     <div class="section-label">Word, Works, Wineskins</div>
     <p class="lede" style="margin-bottom:24px;">This is preliminary — a first, prayerful pass at the challenge you named above. We'll dig into this together, in more depth, when we gather at the mid-level retreat. For now, just jot down what comes to mind.</p>
 
@@ -597,16 +607,26 @@ const form = document.getElementById('appForm');
 const statusMsg = document.getElementById('statusMsg');
 const submitBtn = document.getElementById('submitBtn');
 const confirmCard = document.getElementById('confirmCard');
+const churchHealthAlreadyDone = document.getElementById('churchHealthAlreadyDone');
+const churchHealthSection = document.getElementById('churchHealthSection');
+
+churchHealthAlreadyDone.addEventListener('change', ()=>{
+  churchHealthSection.style.display = churchHealthAlreadyDone.checked ? 'none' : '';
+});
 
 form.addEventListener('submit', async (e)=>{
   e.preventDefault();
   statusMsg.textContent = '';
   statusMsg.className = 'status';
 
+  const alreadyDone = churchHealthAlreadyDone.checked;
+
   const wellElements = [];
-  document.querySelectorAll('input[id^="well-"]:checked').forEach(cb => wellElements.push(cb.value));
   const growElements = [];
-  document.querySelectorAll('input[id^="grow-"]:checked').forEach(cb => growElements.push(cb.value));
+  if(!alreadyDone){
+    document.querySelectorAll('input[id^="well-"]:checked').forEach(cb => wellElements.push(cb.value));
+    document.querySelectorAll('input[id^="grow-"]:checked').forEach(cb => growElements.push(cb.value));
+  }
 
   const entry = {
     name: document.getElementById('fullName').value.trim(),
@@ -622,18 +642,19 @@ form.addEventListener('submit', async (e)=>{
     scriptureWord: document.getElementById('scriptureWord').value.trim(),
     scriptureWorks: document.getElementById('scriptureWorks').value.trim(),
     scriptureWineskins: document.getElementById('scriptureWineskins').value.trim(),
-    baptisms: Number(document.getElementById('baptisms').value || 0),
-    consistentMembers: Number(document.getElementById('consistentMembers').value || 0),
-    comeAndGo: Number(document.getElementById('comeAndGo').value || 0),
+    churchHealthAlreadyDone: alreadyDone,
+    baptisms: alreadyDone ? null : Number(document.getElementById('baptisms').value || 0),
+    consistentMembers: alreadyDone ? null : Number(document.getElementById('consistentMembers').value || 0),
+    comeAndGo: alreadyDone ? null : Number(document.getElementById('comeAndGo').value || 0),
     doingWellElements: wellElements,
-    doingWell: document.getElementById('doingWell').value.trim(),
+    doingWell: alreadyDone ? '' : document.getElementById('doingWell').value.trim(),
     couldGrowElements: growElements,
-    couldGrow: document.getElementById('couldGrow').value.trim(),
-    meetingLocation: document.getElementById('meetingLocation').value.trim(),
-    multipleHouses: document.getElementById('multipleHouses').checked,
-    sharedMeal: document.getElementById('sharedMeal').checked,
-    meetingDay: document.getElementById('meetingDay').value,
-    meetingTime: document.getElementById('meetingTime').value,
+    couldGrow: alreadyDone ? '' : document.getElementById('couldGrow').value.trim(),
+    meetingLocation: alreadyDone ? '' : document.getElementById('meetingLocation').value.trim(),
+    multipleHouses: alreadyDone ? false : document.getElementById('multipleHouses').checked,
+    sharedMeal: alreadyDone ? false : document.getElementById('sharedMeal').checked,
+    meetingDay: alreadyDone ? '' : document.getElementById('meetingDay').value,
+    meetingTime: alreadyDone ? '' : document.getElementById('meetingTime').value,
     submittedAt: new Date().toISOString()
   };
 
@@ -681,9 +702,11 @@ adminToggle.addEventListener('click', async ()=>{
             const card = document.createElement('div');
             card.className = 'app-card';
             card.innerHTML = `<b>${d.name}</b><br>${d.church} · ${d.laArea}<br>${d.email} · ${d.phone}${d.hasElders ? '<br>Has elders: yes' : ''}${d.elders ? '<br>Elders: '+d.elders : ''}<br>`
-              + `Baptisms: ${d.baptisms || 0} · Consistent: ${d.consistentMembers || 0} · Come &amp; go: ${d.comeAndGo || 0}<br>`
-              + `Meets: ${d.meetingLocation || '—'}${d.multipleHouses ? ' (multiple houses)' : ''}${d.sharedMeal ? ' · shares a meal' : ''}<br>`
-              + `${d.meetingDay || ''} ${d.meetingTime || ''}<br>`
+              + (d.churchHealthAlreadyDone
+                  ? `Church health section: already submitted by another leader<br>`
+                  : `Baptisms: ${d.baptisms || 0} · Consistent: ${d.consistentMembers || 0} · Come &amp; go: ${d.comeAndGo || 0}<br>`
+                  + `Meets: ${d.meetingLocation || '—'}${d.multipleHouses ? ' (multiple houses)' : ''}${d.sharedMeal ? ' · shares a meal' : ''}<br>`
+                  + `${(d.meetingDay || d.meetingTime) ? (d.meetingDay || '') + ' ' + (d.meetingTime || '') + '<br>' : ''}`)
               + `${(d.doingWellElements && d.doingWellElements.length) ? 'Doing well (checked): '+d.doingWellElements.join(', ') : ''}${d.doingWell ? '<br>Doing well: '+d.doingWell : ''}`
               + `${(d.couldGrowElements && d.couldGrowElements.length) ? '<br>Could grow (checked): '+d.couldGrowElements.join(', ') : ''}${d.couldGrow ? '<br>Could grow: '+d.couldGrow : ''}`
               + `${d.wins ? '<br>Wins: '+d.wins : ''}${d.challenges ? '<br>Challenges: '+d.challenges : ''}`
