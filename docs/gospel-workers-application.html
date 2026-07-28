@@ -596,19 +596,21 @@
 
 </div>
 
-<button class="admin-toggle" id="adminToggle">view responses</button>
-<div class="admin-panel" id="adminPanel">
-  <h3>Responses received</h3>
-  <div id="adminList"></div>
-</div>
-
 <script>
+// Same Cloudflare Worker relay used by the WordPress copy of this form.
+// No Airtable token ever lives in this file -- the relay holds it server-side.
+const RELAY_URL = 'https://la-metro-midlevel-relay.rick-gregoryhb.workers.dev/';
+
 const form = document.getElementById('appForm');
 const statusMsg = document.getElementById('statusMsg');
 const submitBtn = document.getElementById('submitBtn');
 const confirmCard = document.getElementById('confirmCard');
 const churchHealthAlreadyDone = document.getElementById('churchHealthAlreadyDone');
 const churchHealthSection = document.getElementById('churchHealthSection');
+
+function isValidEmail(v){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
 
 churchHealthAlreadyDone.addEventListener('change', ()=>{
   churchHealthSection.style.display = churchHealthAlreadyDone.checked ? 'none' : '';
@@ -652,74 +654,44 @@ form.addEventListener('submit', async (e)=>{
     multipleHouses: alreadyDone ? false : document.getElementById('multipleHouses').checked,
     sharedMeal: alreadyDone ? false : document.getElementById('sharedMeal').checked,
     meetingDay: alreadyDone ? '' : document.getElementById('meetingDay').value,
-    meetingTime: alreadyDone ? '' : document.getElementById('meetingTime').value,
-    submittedAt: new Date().toISOString()
+    meetingTime: alreadyDone ? '' : document.getElementById('meetingTime').value
   };
+
+  // Fast client-side check for UX only -- the relay re-validates everything server-side.
+  if(!entry.name || !entry.email || !entry.phone || !entry.church || !entry.laArea || !isValidEmail(entry.email)){
+    statusMsg.textContent = 'Please fill in all required fields with a valid email.';
+    statusMsg.className = 'status err';
+    return;
+  }
 
   submitBtn.disabled = true;
   statusMsg.textContent = 'Submitting…';
 
   try{
-    const key = 'survey:' + Date.now() + ':' + Math.random().toString(36).slice(2,7);
-    const result = await window.storage.set(key, JSON.stringify(entry), true);
-    if(!result){ throw new Error('Storage returned no result'); }
+    const res = await fetch(RELAY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry)
+    });
+
+    let payload = null;
+    try{ payload = await res.json(); }catch(_e){ /* non-JSON error body */ }
+
+    if(!res.ok || !payload || !payload.ok){
+      statusMsg.textContent = (payload && payload.error) ? payload.error : 'Something went wrong saving your response. Please try again.';
+      statusMsg.className = 'status err';
+      submitBtn.disabled = false;
+      return;
+    }
+
     form.style.display = 'none';
     confirmCard.style.display = 'block';
     statusMsg.textContent = '';
   }catch(err){
-    console.error('Storage error:', err);
-    statusMsg.textContent = 'Something went wrong saving your response. Please try again.';
+    console.error('Submit error:', err);
+    statusMsg.textContent = "Couldn't reach the server. Check your connection and try again.";
     statusMsg.className = 'status err';
     submitBtn.disabled = false;
-  }
-});
-
-const adminToggle = document.getElementById('adminToggle');
-const adminPanel = document.getElementById('adminPanel');
-const adminList = document.getElementById('adminList');
-
-adminToggle.addEventListener('click', async ()=>{
-  const isOpen = adminPanel.style.display === 'block';
-  if(isOpen){
-    adminPanel.style.display = 'none';
-    adminToggle.textContent = 'view responses';
-    return;
-  }
-  adminToggle.textContent = 'loading…';
-  try{
-    const list = await window.storage.list('survey:', true);
-    adminList.innerHTML = '';
-    if(!list || !list.keys || list.keys.length === 0){
-      adminList.innerHTML = '<p style="color:rgba(246,241,228,0.5); font-size:13.5px;">No responses yet.</p>';
-    } else {
-      for(const key of list.keys){
-        try{
-          const res = await window.storage.get(key, true);
-          if(res && res.value){
-            const d = JSON.parse(res.value);
-            const card = document.createElement('div');
-            card.className = 'app-card';
-            card.innerHTML = `<b>${d.name}</b><br>${d.church} · ${d.laArea}<br>${d.email} · ${d.phone}${d.hasElders ? '<br>Has elders: yes' : ''}${d.elders ? '<br>Elders: '+d.elders : ''}<br>`
-              + (d.churchHealthAlreadyDone
-                  ? `Church health section: already submitted by another leader<br>`
-                  : `Baptisms: ${d.baptisms || 0} · Consistent: ${d.consistentMembers || 0} · Come &amp; go: ${d.comeAndGo || 0}<br>`
-                  + `Meets: ${d.meetingLocation || '—'}${d.multipleHouses ? ' (multiple houses)' : ''}${d.sharedMeal ? ' · shares a meal' : ''}<br>`
-                  + `${(d.meetingDay || d.meetingTime) ? (d.meetingDay || '') + ' ' + (d.meetingTime || '') + '<br>' : ''}`)
-              + `${(d.doingWellElements && d.doingWellElements.length) ? 'Doing well (checked): '+d.doingWellElements.join(', ') : ''}${d.doingWell ? '<br>Doing well: '+d.doingWell : ''}`
-              + `${(d.couldGrowElements && d.couldGrowElements.length) ? '<br>Could grow (checked): '+d.couldGrowElements.join(', ') : ''}${d.couldGrow ? '<br>Could grow: '+d.couldGrow : ''}`
-              + `${d.wins ? '<br>Wins: '+d.wins : ''}${d.challenges ? '<br>Challenges: '+d.challenges : ''}`
-              + `${d.prayerTime ? '<br>Prayer time: '+d.prayerTime : ''}`
-              + `${d.scriptureWord ? '<br>Word: '+d.scriptureWord : ''}${d.scriptureWorks ? '<br>Works: '+d.scriptureWorks : ''}${d.scriptureWineskins ? '<br>Wineskins: '+d.scriptureWineskins : ''}`;
-            adminList.appendChild(card);
-          }
-        }catch(e){ console.error('Failed to load entry', key, e); }
-      }
-    }
-    adminPanel.style.display = 'block';
-    adminToggle.textContent = 'hide responses';
-  }catch(err){
-    console.error('List error:', err);
-    adminToggle.textContent = 'view responses';
   }
 });
 </script>
