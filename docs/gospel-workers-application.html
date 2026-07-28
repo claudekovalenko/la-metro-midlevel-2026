@@ -135,7 +135,7 @@
     margin-top: 6px;
   }
 
-  input[type=text], input[type=email], input[type=tel], select, textarea{
+  input[type=text], input[type=email], input[type=tel], input[type=number], input[type=time], select, textarea{
     width: 100%;
     background: rgba(246,241,228,0.05);
     border: 1px solid var(--line);
@@ -168,7 +168,12 @@
     grid-template-columns: 1fr 1fr;
     gap: 18px;
   }
-  @media (max-width: 540px){ .row2{ grid-template-columns: 1fr; } }
+  .row3{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 540px){ .row2{ grid-template-columns: 1fr; } .row3{ grid-template-columns: 1fr; } }
 
   .inline-check{
     display:flex;
@@ -225,6 +230,35 @@
     line-height: 1.55;
     color: rgba(246,241,228,0.72);
     margin: 0;
+  }
+
+  .checklist{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px 20px;
+    background: rgba(246,241,228,0.03);
+  }
+  @media (max-width: 540px){ .checklist{ grid-template-columns: 1fr; } }
+  .check-item{
+    display:flex;
+    align-items:flex-start;
+    gap: 10px;
+    font-size: 14px;
+  }
+  .check-item input[type=checkbox]{
+    margin-top: 3px;
+    width: 17px;
+    height: 17px;
+    accent-color: var(--gold);
+    flex-shrink:0;
+  }
+  .check-item label{
+    margin:0;
+    font-weight: 500;
+    font-size: 14px;
   }
 
   .submit-row{
@@ -336,7 +370,6 @@
   <a class="nav-logo" href="index.html">LA Metro Midlevel</a>
   <ul class="nav-links">
     <li><a href="gospel-workers-application.html">Apply</a></li>
-    <li><a href="church-health-survey.html">Church Health</a></li>
     <li><a href="socal-people-groups-breakdown.html">SoCal Breakdown</a></li>
   </ul>
 </nav>
@@ -345,7 +378,7 @@
 
   <div class="eyebrow">NPL Midlevel Survey · Southern California</div>
   <h1>Gathering for <em>NPL Gospel Workers</em> in SoCal</h1>
-  <p class="lede">A working retreat for pastors, worship leaders, youth workers, and ministry staff a few years into the calling — past the beginning, still building. This survey helps us shape the gathering; responses are reviewed on a rolling basis.</p>
+  <p class="lede">A working retreat for pastors, worship leaders, youth workers, and ministry staff a few years into the calling — past the beginning, still building. This combined application and church health check-in helps us shape the gathering; responses are reviewed on a rolling basis.</p>
 
   <div class="meta-row">
     <div class="meta-item"><span>When</span><span>August 20–22, 2026</span></div>
@@ -397,8 +430,8 @@
         <input type="tel" id="phone" placeholder="(323) 555-0148" required>
       </div>
       <div class="field">
-        <label for="church">Church you're a part of</label>
-        <input type="text" id="church" placeholder="Name of your church" required>
+        <label for="church">Church / circle you're a part of</label>
+        <input type="text" id="church" placeholder="Name of your church or circle" required>
       </div>
     </div>
 
@@ -417,14 +450,108 @@
       <textarea id="elders" placeholder="List each elder's name, email, and phone number, e.g.&#10;Jordan Reyes — jordan@church.org — (323) 555-0148"></textarea>
     </div>
 
+    <div class="section-label">Wins &amp; challenges</div>
+
     <div class="field">
-      <label for="wins">Wins over the past two years</label>
-      <textarea id="wins" placeholder="What's gone well in reaching people in Southern California over the last two years?"></textarea>
+      <label for="wins">Wins over the past season</label>
+      <textarea id="wins" placeholder="What's gone well in reaching people in Southern California, or in your church, over the last season?"></textarea>
     </div>
 
     <div class="field">
-      <label for="barriers">Current barriers and stuckages</label>
-      <textarea id="barriers" placeholder="What's been getting in the way, or where do you feel stuck right now?"></textarea>
+      <label for="challenges">Current challenges and stuckages</label>
+      <textarea id="challenges" placeholder="What's been getting in the way, or where do you feel stuck right now?"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="prayerTime">Time in prayer / with the Lord</label>
+      <textarea id="prayerTime" placeholder="How is your church spending time in prayer or with the Lord right now — as individuals and together?"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="scriptureWord">Word — scriptural solution to the challenge</label>
+      <textarea id="scriptureWord" placeholder="What does scripture say to the challenge you named above?"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="scriptureWorks">Works — where you've seen it lived out</label>
+      <textarea id="scriptureWorks" placeholder="Where have you seen this worked out elsewhere?"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="scriptureWineskins">Wineskins — the concrete next step</label>
+      <textarea id="scriptureWineskins" placeholder="What structural change could your church try?"></textarea>
+    </div>
+
+    <div class="section-label">Church health metrics</div>
+
+    <div class="row3">
+      <div class="field">
+        <label for="baptisms">Number of baptisms</label>
+        <input type="number" id="baptisms" min="0" step="1" placeholder="0">
+      </div>
+      <div class="field">
+        <label for="consistentMembers">Consistent members attending</label>
+        <input type="number" id="consistentMembers" min="0" step="1" placeholder="0">
+      </div>
+      <div class="field">
+        <label for="comeAndGo">People who come and go</label>
+        <input type="number" id="comeAndGo" min="0" step="1" placeholder="0">
+        <p class="hint">Visitors or inconsistent attenders, not counted above.</p>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Elements found in your church circle</label>
+      <div class="checklist">
+        <div class="check-item"><input type="checkbox" id="el-word" value="Word / scripture"><label for="el-word">Word / scripture</label></div>
+        <div class="check-item"><input type="checkbox" id="el-prayer" value="Prayer"><label for="el-prayer">Prayer</label></div>
+        <div class="check-item"><input type="checkbox" id="el-worship" value="Worship"><label for="el-worship">Worship</label></div>
+        <div class="check-item"><input type="checkbox" id="el-fellowship" value="Fellowship"><label for="el-fellowship">Fellowship</label></div>
+        <div class="check-item"><input type="checkbox" id="el-communion" value="Communion"><label for="el-communion">Communion</label></div>
+        <div class="check-item"><input type="checkbox" id="el-giving" value="Giving / sharing resources"><label for="el-giving">Giving / sharing resources</label></div>
+        <div class="check-item"><input type="checkbox" id="el-accountability" value="Accountability"><label for="el-accountability">Accountability</label></div>
+        <div class="check-item"><input type="checkbox" id="el-leadership" value="Leadership development"><label for="el-leadership">Leadership development</label></div>
+        <div class="check-item"><input type="checkbox" id="el-mission" value="Mission / multiplication"><label for="el-mission">Mission / multiplication</label></div>
+        <div class="check-item"><input type="checkbox" id="el-baptism" value="Baptism"><label for="el-baptism">Baptism</label></div>
+      </div>
+    </div>
+
+    <div class="section-label">Where and how you meet</div>
+
+    <div class="field">
+      <label for="meetingLocation">Where do you meet?</label>
+      <input type="text" id="meetingLocation" placeholder="e.g. a home in Long Beach, a park, a rented space">
+    </div>
+
+    <div class="inline-check">
+      <input type="checkbox" id="multipleHouses">
+      <label for="multipleHouses">We meet across multiple houses / locations</label>
+    </div>
+
+    <div class="inline-check">
+      <input type="checkbox" id="sharedMeal">
+      <label for="sharedMeal">We share a meal together when we meet</label>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label for="meetingDay">Typical day you meet</label>
+        <select id="meetingDay">
+          <option value="">Select a day</option>
+          <option>Sunday</option>
+          <option>Monday</option>
+          <option>Tuesday</option>
+          <option>Wednesday</option>
+          <option>Thursday</option>
+          <option>Friday</option>
+          <option>Saturday</option>
+          <option>Varies</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="meetingTime">Typical time you meet</label>
+        <input type="time" id="meetingTime">
+      </div>
     </div>
 
     <div class="submit-row">
@@ -457,6 +584,9 @@ form.addEventListener('submit', async (e)=>{
   statusMsg.textContent = '';
   statusMsg.className = 'status';
 
+  const elements = [];
+  document.querySelectorAll('.checklist input[type=checkbox]:checked').forEach(cb => elements.push(cb.value));
+
   const entry = {
     name: document.getElementById('fullName').value.trim(),
     email: document.getElementById('email').value.trim(),
@@ -466,7 +596,20 @@ form.addEventListener('submit', async (e)=>{
     hasElders: document.getElementById('hasElders').checked,
     elders: document.getElementById('elders').value.trim(),
     wins: document.getElementById('wins').value.trim(),
-    barriers: document.getElementById('barriers').value.trim(),
+    challenges: document.getElementById('challenges').value.trim(),
+    prayerTime: document.getElementById('prayerTime').value.trim(),
+    scriptureWord: document.getElementById('scriptureWord').value.trim(),
+    scriptureWorks: document.getElementById('scriptureWorks').value.trim(),
+    scriptureWineskins: document.getElementById('scriptureWineskins').value.trim(),
+    baptisms: Number(document.getElementById('baptisms').value || 0),
+    consistentMembers: Number(document.getElementById('consistentMembers').value || 0),
+    comeAndGo: Number(document.getElementById('comeAndGo').value || 0),
+    healthElements: elements,
+    meetingLocation: document.getElementById('meetingLocation').value.trim(),
+    multipleHouses: document.getElementById('multipleHouses').checked,
+    sharedMeal: document.getElementById('sharedMeal').checked,
+    meetingDay: document.getElementById('meetingDay').value,
+    meetingTime: document.getElementById('meetingTime').value,
     submittedAt: new Date().toISOString()
   };
 
@@ -513,7 +656,14 @@ adminToggle.addEventListener('click', async ()=>{
             const d = JSON.parse(res.value);
             const card = document.createElement('div');
             card.className = 'app-card';
-            card.innerHTML = `<b>${d.name}</b><br>${d.church} · ${d.laArea}<br>${d.email} · ${d.phone}${d.hasElders ? '<br>Has elders: yes' : ''}${d.elders ? '<br>Elders: '+d.elders : ''}${d.wins ? '<br>Wins (2 yrs): '+d.wins : ''}${d.barriers ? '<br>Barriers: '+d.barriers : ''}`;
+            card.innerHTML = `<b>${d.name}</b><br>${d.church} · ${d.laArea}<br>${d.email} · ${d.phone}${d.hasElders ? '<br>Has elders: yes' : ''}${d.elders ? '<br>Elders: '+d.elders : ''}<br>`
+              + `Baptisms: ${d.baptisms || 0} · Consistent: ${d.consistentMembers || 0} · Come &amp; go: ${d.comeAndGo || 0}<br>`
+              + `Meets: ${d.meetingLocation || '—'}${d.multipleHouses ? ' (multiple houses)' : ''}${d.sharedMeal ? ' · shares a meal' : ''}<br>`
+              + `${d.meetingDay || ''} ${d.meetingTime || ''}<br>`
+              + `Health elements: ${(d.healthElements || []).join(', ') || '—'}`
+              + `${d.wins ? '<br>Wins: '+d.wins : ''}${d.challenges ? '<br>Challenges: '+d.challenges : ''}`
+              + `${d.prayerTime ? '<br>Prayer time: '+d.prayerTime : ''}`
+              + `${d.scriptureWord ? '<br>Word: '+d.scriptureWord : ''}${d.scriptureWorks ? '<br>Works: '+d.scriptureWorks : ''}${d.scriptureWineskins ? '<br>Wineskins: '+d.scriptureWineskins : ''}`;
             adminList.appendChild(card);
           }
         }catch(e){ console.error('Failed to load entry', key, e); }
