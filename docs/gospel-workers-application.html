@@ -615,8 +615,8 @@
 
     </div>
 
-    <div class="section-label">Your 5x5 <span style="font-style:normal; font-weight:400; font-size:13px; color:rgba(246,241,228,0.5);">(optional)</span></div>
-    <p class="lede" style="margin-bottom:24px;">Five people groups and five places you're currently seeking to reach with the gospel. Totally optional — leave any blank.</p>
+    <div class="section-label">Your 5x5</div>
+    <p class="lede" style="margin-bottom:24px;">Five people groups and five places you're currently seeking to reach with the gospel. You don't need all five of each, but please list at least one people group and one place.</p>
 
     <div class="field">
       <label>Five people groups</label>
@@ -783,6 +783,11 @@ form.addEventListener('submit', async (e)=>{
   // Fast client-side check for UX only -- the relay re-validates everything server-side.
   if(!entry.name || !entry.email || !entry.phone || !entry.church || !entry.laArea || !isValidEmail(entry.email)){
     statusMsg.textContent = 'Please fill in all required fields with a valid email.';
+    statusMsg.className = 'status err';
+    return;
+  }
+  if(!entry.fivePeopleGroups.length || !entry.fivePlaces.length){
+    statusMsg.textContent = 'In your 5x5, please list at least one people group and one place.';
     statusMsg.className = 'status err';
     return;
   }
