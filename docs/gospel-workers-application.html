@@ -261,6 +261,39 @@
     font-size: 14px;
   }
 
+  .zip-row{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .zip-row input[type=text]{ flex: 1; }
+  .zip-row-remove{
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .zip-row-remove:hover{ border-color: var(--clay); color: var(--clay); }
+  .add-row-btn{
+    background: none;
+    border: 1px dashed var(--line);
+    color: var(--gold-soft);
+    padding: 10px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .add-row-btn:hover{ border-color: var(--gold-soft); }
+
   .submit-row{
     margin-top: 44px;
     display:flex;
@@ -542,6 +575,18 @@
       <label for="multipleHouses">We meet across multiple houses / locations</label>
     </div>
 
+    <div id="houseZipCodesSection" class="field" style="display:none;">
+      <label>Zip codes for each house / location</label>
+      <div id="zipCodesList">
+        <div class="zip-row">
+          <input type="text" class="zipCodeInput" inputmode="numeric" pattern="[0-9]{5}" maxlength="10" placeholder="e.g. 90015">
+          <button type="button" class="zip-row-remove" aria-label="Remove this zip code">&times;</button>
+        </div>
+      </div>
+      <button type="button" id="addZipRowBtn" class="add-row-btn">+ Add another location</button>
+      <p class="hint">One zip code per house or location you meet across.</p>
+    </div>
+
     <div class="inline-check">
       <input type="checkbox" id="sharedMeal">
       <label for="sharedMeal">We share a meal together when we meet</label>
@@ -612,13 +657,45 @@ const submitBtn = document.getElementById('submitBtn');
 const confirmCard = document.getElementById('confirmCard');
 const churchHealthAlreadyDone = document.getElementById('churchHealthAlreadyDone');
 const churchHealthSection = document.getElementById('churchHealthSection');
+const multipleHouses = document.getElementById('multipleHouses');
+const houseZipCodesSection = document.getElementById('houseZipCodesSection');
+const zipCodesList = document.getElementById('zipCodesList');
+const addZipRowBtn = document.getElementById('addZipRowBtn');
 
 function isValidEmail(v){
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
+function makeZipRow(){
+  const row = document.createElement('div');
+  row.className = 'zip-row';
+  row.innerHTML = '<input type="text" class="zipCodeInput" inputmode="numeric" pattern="[0-9]{5}" maxlength="10" placeholder="e.g. 90015">'
+    + '<button type="button" class="zip-row-remove" aria-label="Remove this zip code">&times;</button>';
+  row.querySelector('.zip-row-remove').addEventListener('click', ()=>{
+    row.remove();
+    if(!zipCodesList.querySelector('.zip-row')) zipCodesList.appendChild(makeZipRow());
+  });
+  return row;
+}
+
+zipCodesList.querySelectorAll('.zip-row-remove').forEach((btn)=>{
+  btn.addEventListener('click', ()=>{
+    const row = btn.closest('.zip-row');
+    row.remove();
+    if(!zipCodesList.querySelector('.zip-row')) zipCodesList.appendChild(makeZipRow());
+  });
+});
+
+addZipRowBtn.addEventListener('click', ()=>{
+  zipCodesList.appendChild(makeZipRow());
+});
+
 churchHealthAlreadyDone.addEventListener('change', ()=>{
   churchHealthSection.style.display = churchHealthAlreadyDone.checked ? 'none' : '';
+});
+
+multipleHouses.addEventListener('change', ()=>{
+  houseZipCodesSection.style.display = multipleHouses.checked ? '' : 'none';
 });
 
 form.addEventListener('submit', async (e)=>{
@@ -627,6 +704,11 @@ form.addEventListener('submit', async (e)=>{
   statusMsg.className = 'status';
 
   const alreadyDone = churchHealthAlreadyDone.checked;
+  const isMultipleHouses = alreadyDone ? false : multipleHouses.checked;
+
+  const houseZipCodes = isMultipleHouses
+    ? Array.from(document.querySelectorAll('.zipCodeInput')).map(i => i.value.trim()).filter(Boolean)
+    : [];
 
   const wellElements = [];
   const growElements = [];
@@ -656,7 +738,8 @@ form.addEventListener('submit', async (e)=>{
     consistentMembers: alreadyDone ? null : Number(document.getElementById('consistentMembers').value || 0),
     comeAndGo: alreadyDone ? null : Number(document.getElementById('comeAndGo').value || 0),
     meetingLocation: alreadyDone ? '' : document.getElementById('meetingLocation').value.trim(),
-    multipleHouses: alreadyDone ? false : document.getElementById('multipleHouses').checked,
+    multipleHouses: isMultipleHouses,
+    houseZipCodes: houseZipCodes,
     sharedMeal: alreadyDone ? false : document.getElementById('sharedMeal').checked,
     meetingDay: alreadyDone ? '' : document.getElementById('meetingDay').value,
     meetingTime: alreadyDone ? '' : document.getElementById('meetingTime').value
