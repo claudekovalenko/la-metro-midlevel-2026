@@ -414,9 +414,8 @@
   <p class="lede">A working retreat for laborers and practitioners leading in their region a few years into the calling — past the beginning, still building. This combined application and church health check-in helps us shape the gathering; responses are reviewed on a rolling basis.</p>
 
   <div class="meta-row">
-    <div class="meta-item"><span>When</span><span>August 20–22, 2026</span></div>
+    <div class="meta-item"><span>When</span><span>August 19–22, 2026</span></div>
     <div class="meta-item"><span>Where</span><span>2110 Pacific Coast Highway, Huntington Beach, CA 92648</span></div>
-    <div class="meta-item"><span>Who</span><span>Mid-level gospel workers</span></div>
   </div>
 
   <div class="thirds">
@@ -455,16 +454,6 @@
     <div class="field">
       <label for="laArea">Area of Southern California you're part of</label>
       <input type="text" id="laArea" placeholder="e.g. South LA, Inland Empire, San Diego, Orange County" required>
-    </div>
-
-    <div class="field">
-      <label>Which days do you plan to attend?</label>
-      <div class="checklist" style="grid-template-columns: 1fr 1fr 1fr;">
-        <div class="check-item"><input type="checkbox" id="attend-thu" value="Thursday, Aug 20"><label for="attend-thu">Thursday, Aug 20</label></div>
-        <div class="check-item"><input type="checkbox" id="attend-fri" value="Friday, Aug 21"><label for="attend-fri">Friday, Aug 21</label></div>
-        <div class="check-item"><input type="checkbox" id="attend-sat" value="Saturday, Aug 22"><label for="attend-sat">Saturday, Aug 22</label></div>
-      </div>
-      <p class="hint">This helps us plan food and logistics — it's not locked in. You can update it closer to the event by emailing us; ideally let us know a week out, but at minimum by the night before a day you can no longer make, since that's when we're finalizing food delivery.</p>
     </div>
 
     <div class="section-label">Wins &amp; challenges</div>
@@ -754,7 +743,6 @@ form.addEventListener('submit', async (e)=>{
     phone: document.getElementById('phone').value.trim(),
     church: document.getElementById('church').value.trim(),
     laArea: document.getElementById('laArea').value.trim(),
-    attendanceDays: Array.from(document.querySelectorAll('input[id^="attend-"]:checked')).map(cb => cb.value),
     wins: document.getElementById('wins').value.trim(),
     challenges: document.getElementById('challenges').value.trim(),
     scriptureWord: document.getElementById('scriptureWord').value.trim(),
