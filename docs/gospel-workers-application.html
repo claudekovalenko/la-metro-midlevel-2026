@@ -633,6 +633,39 @@
       <textarea id="scriptureWineskins" placeholder="What structural change could your church try?"></textarea>
     </div>
 
+    <div class="section-label">Your 5x5 <span style="font-style:normal; font-weight:400; font-size:13px; color:rgba(246,241,228,0.5);">(optional)</span></div>
+    <p class="lede" style="margin-bottom:24px;">Five people and five places you're currently seeking to reach with the gospel. Totally optional — leave any blank.</p>
+
+    <div class="field">
+      <label>Five people</label>
+      <div class="row2">
+        <input type="text" id="fivePerson1" placeholder="Person 1">
+        <input type="text" id="fivePerson2" placeholder="Person 2">
+      </div>
+      <div class="row2" style="margin-top:12px;">
+        <input type="text" id="fivePerson3" placeholder="Person 3">
+        <input type="text" id="fivePerson4" placeholder="Person 4">
+      </div>
+      <div class="row2" style="margin-top:12px;">
+        <input type="text" id="fivePerson5" placeholder="Person 5">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Five places</label>
+      <div class="row2">
+        <input type="text" id="fivePlace1" placeholder="Place 1">
+        <input type="text" id="fivePlace2" placeholder="Place 2">
+      </div>
+      <div class="row2" style="margin-top:12px;">
+        <input type="text" id="fivePlace3" placeholder="Place 3">
+        <input type="text" id="fivePlace4" placeholder="Place 4">
+      </div>
+      <div class="row2" style="margin-top:12px;">
+        <input type="text" id="fivePlace5" placeholder="Place 5">
+      </div>
+    </div>
+
     <div class="submit-row">
       <button type="submit" id="submitBtn">Submit survey</button>
       <span class="status" id="statusMsg"></span>
@@ -727,6 +760,8 @@ form.addEventListener('submit', async (e)=>{
     scriptureWord: document.getElementById('scriptureWord').value.trim(),
     scriptureWorks: document.getElementById('scriptureWorks').value.trim(),
     scriptureWineskins: document.getElementById('scriptureWineskins').value.trim(),
+    fivePeople: [1,2,3,4,5].map(n => document.getElementById('fivePerson'+n).value.trim()).filter(Boolean),
+    fivePlaces: [1,2,3,4,5].map(n => document.getElementById('fivePlace'+n).value.trim()).filter(Boolean),
     doingWellElements: wellElements,
     doingWell: document.getElementById('doingWell').value.trim(),
     couldGrowElements: growElements,
