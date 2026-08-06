@@ -31,6 +31,6 @@ This can't be built or signed from a non-Mac environment. To build and submit:
 5. `pod install` from `ios/App` if Xcode asks for it (CocoaPods)
 6. Build → Archive → upload via Xcode Organizer to App Store Connect
 
-## Known open item
+## Form backend
 
-The application form (`docs/gospel-workers-application.html`) currently has no real backend — submissions don't go anywhere until one is wired up (e.g. FormSubmit.co to an email address, or a Google Form/Airtable swap-in).
+The application form (`docs/gospel-workers-application.html`) submits to a Cloudflare Worker relay (see `RELAY_URL` in that file), which writes each response into an Airtable base. The Airtable token lives in the Worker server-side and is never stored in this repo. The same relay also backs the WordPress copy of the form (see `scripts/sync-to-wordpress.js`), so submissions from the GitHub Pages site, the iOS app, and the WordPress page all land in the same Airtable.
