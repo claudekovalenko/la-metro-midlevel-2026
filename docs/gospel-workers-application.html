@@ -456,6 +456,12 @@
       <input type="text" id="laArea" placeholder="e.g. South LA, Inland Empire, San Diego, Orange County" required>
     </div>
 
+    <div class="inline-check">
+      <input type="checkbox" id="notAttending">
+      <label for="notAttending">I won't be attending the gathering on August 19&ndash;22</label>
+    </div>
+    <p class="hint" style="margin-bottom:22px;">Check this if you can't make the dates. Please still fill out the rest &mdash; your answers shape the gathering either way.</p>
+
     <div class="section-label">Wins &amp; challenges</div>
 
     <div class="field">
@@ -663,7 +669,7 @@
 
   <div class="confirm-card" id="confirmCard">
     <h2>Received.</h2>
-    <p>Thank you — your response is in. We review these on a rolling basis.</p>
+    <p id="confirmText">Thank you — your response is in. We review these on a rolling basis.</p>
   </div>
 
 </div>
@@ -677,6 +683,8 @@ const form = document.getElementById('appForm');
 const statusMsg = document.getElementById('statusMsg');
 const submitBtn = document.getElementById('submitBtn');
 const confirmCard = document.getElementById('confirmCard');
+const confirmText = document.getElementById('confirmText');
+const notAttending = document.getElementById('notAttending');
 const churchHealthAlreadyDone = document.getElementById('churchHealthAlreadyDone');
 const churchHealthSection = document.getElementById('churchHealthSection');
 const multipleHouses = document.getElementById('multipleHouses');
@@ -743,6 +751,7 @@ form.addEventListener('submit', async (e)=>{
     phone: document.getElementById('phone').value.trim(),
     church: document.getElementById('church').value.trim(),
     laArea: document.getElementById('laArea').value.trim(),
+    notAttending: notAttending.checked,
     wins: document.getElementById('wins').value.trim(),
     challenges: document.getElementById('challenges').value.trim(),
     scriptureWord: document.getElementById('scriptureWord').value.trim(),
@@ -800,6 +809,9 @@ form.addEventListener('submit', async (e)=>{
       return;
     }
 
+    if(entry.notAttending){
+      confirmText.textContent = "Thank you — your response is in, and we've noted you won't be at the gathering. Your answers still shape what we work on.";
+    }
     form.style.display = 'none';
     confirmCard.style.display = 'block';
     statusMsg.textContent = '';
